@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VentureClass | กระดานลงทุน</title>
+    <!-- ใช้ Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- ฟอนต์ภาษาไทย Prompt -->
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Prompt', sans-serif; }
+        /* ซ่อนลูกศรขึ้นลงในช่อง input number */
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+            -webkit-appearance: none; 
+            margin: 0; 
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 p-4 md:p-8 min-h-screen">
+
+    <div class="max-w-5xl mx-auto">
+        <!-- Header & Budget Display -->
+        <header class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 bg-white p-6 rounded-2xl shadow-sm border border-gray-100 gap-4">
+            <div>
+                <h1 class="text-3xl font-semibold text-gray-900 mb-1">กระดานลงทุน</h1>
+                <p class="text-gray-500 flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                    <span id="studentInfo">กำลังโหลดข้อมูล...</span>
+                </p>
+            </div>
+            <div class="text-left md:text-right w-full md:w-auto bg-gray-50 p-4 rounded-xl border border-gray-100">
+                <p class="text-sm text-gray-500 mb-1">งบประมาณคงเหลือ</p>
+                <p class="text-3xl font-bold text-gray-900">฿ <span id="budgetAvailable">50,000</span></p>
+            </div>
+        </header>
+
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-xl font-medium text-gray-800">ธุรกิจที่เปิดระดมทุน</h2>
+            <button onclick="logout()" class="text-sm text-red-500 hover:text-red-700 transition">ออกจากระบบ</button>
+        </div>
+        
+        <!-- Grid สำหรับแสดง Card ธุรกิจ -->
+        <div id="businessGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="col-span-full text-center py-12">
+                <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mb-4"></div>
+                <p class="text-gray-500">กำลังโหลดรายชื่อธุรกิจ...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ⚠️ นำ URL ของ Web App ที่ได้จาก Google Apps Script มาวางในเครื่องหมายคำพูดด้านล่างนี้
+        const API_URL = "วาง_URL_ของ_WEB_APP_ที่คัดลอกไว้ตรงนี้";
+        
+        // 1. ตรวจสอบการล็อกอิน
+        const savedUser = localStorage.getItem('ventureUser');
+        if(!savedUser) {
+            alert("กรุณาลงทะเบียนก่อนเข้าใช้งาน");
+            window.location.href = 'index.html';
+        }
+        const currentUser = JSON.parse(savedUser);
+
+        // 2. จัดการเรื่องงบประมาณ
+        const INITIAL_BUDGET = 50000; // ครูสามารถเปลี่ยนตัวเลขตั้งต้นตรงนี้ได้
+        let currentBudget = localStorage.getItem(`budget_${currentUser.studentId}`);
+        
+        if(!currentBudget) {
+            currentBudget = INITIAL_BUDGET;
+            localStorage.setItem(`budget_${currentUser.studentId}`, currentBudget);
+        } else {
+            currentBudget = parseInt(currentBudget);
+        }
+
+        // 3. แสดงผลข้อมูลนักเรียนและเงิน
+        document.getElementById('studentInfo').innerText = `${currentUser.name} ${currentUser.surname} (ม.${currentUser.class} เลขที่ ${currentUser.number})`;
+        updateBudgetDisplay();
+
+        function updateBudgetDisplay() {
+            document.getElementById('budgetAvailable').innerText = currentBudget.toLocaleString();
+        }
+
+        // 4. ฟังก์ชันดึงธุรกิจจาก Apps Script
+        async function loadBusinesses() {
+            try {
+                const response = await fetch(API_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "text/plain;charset=utf-8" },
+                    body: JSON.stringify({
+                        action: "getBusinesses",
+                        payload: { class: currentUser.class }
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if(result.success) {
+                    renderBusinesses(result.data);
+                } else {
+                    document.getElementById('businessGrid').innerHTML = `<p class="col-span-full text-center text-red-500 py-8">ไม่สามารถโหลดข้อมูลได้: ${result.message}</p>`;
+                }
+            } catch (error) {
+                document.getElementById('businessGrid').innerHTML = `<p class="col-span-full text-center text-red-500 py-8">เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์</p>`;
+            }
+        }
+
+        // 5. ฟังก์ชันสร้าง Card ธุรกิจ
+        function renderBusinesses(businesses) {
+            const grid = document.getElementById('businessGrid');
+            grid.innerHTML = ""; 
+
+            if(businesses.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full text-center py-16 bg-white rounded-2xl border border-gray-100">
+                        <p class="text-gray-500 text-lg">ยังไม่มีธุรกิจเปิดให้ลงทุนสำหรับห้อง ม.${currentUser.class} ในขณะนี้</p>
+                    </div>`;
+                return;
+            }
+
+            businesses.forEach(business => {
+                const card = `
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-between hover:shadow-md transition">
+                        <div>
+                            <div class="inline-block px-3 py-1 bg-gray-100 text-gray-600 text-xs rounded-full mb-3">ID: ${business.id}</div>
+                            <h3 class="text-xl font-semibold text-gray-900 leading-tight">${business.name}</h3>
+                            <p class="text-gray-500 text-sm mt-3 mb-6 line-clamp-3">${business.description}</p>
+                        </div>
+                        
+                        <div class="mt-auto space-y-3">
+                            <div class="relative">
+                                <span class="absolute left-4 top-3 text-gray-500">฿</span>
+                                <input type="number" id="amount-${business.id}" placeholder="ระบุยอดเงินลงทุน" class="w-full pl-8 pr-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-900 transition">
+                            </div>
+                            <button id="btn-${business.id}" onclick="invest('${business.id}', '${business.name}')" class="w-full py-3 bg-gray-900 text-white font-medium rounded-xl hover:bg-gray-800 transition flex justify-center items-center">
+                                ยืนยันการลงทุน
+                            </button>
+                        </div>
+                    </div>
+                `;
+                grid.innerHTML += card;
+            });
+        }
+
+        // 6. ฟังก์ชันกดปุ่มลงทุน
+        async function invest(businessId, businessName) {
+            const amountInput = document.getElementById(`amount-${businessId}`);
+            const btn = document.getElementById(`btn-${businessId}`);
+            const amount = parseInt(amountInput.value);
+
+            if(!amount || amount <= 0) {
+                alert("กรุณาระบุจำนวนเงินที่ถูกต้อง (มากกว่า 0)");
+                return;
+            }
+
+            if(amount > currentBudget) {
+                alert("ยอดเงินลงทุนของคุณไม่เพียงพอ!");
+                return;
+            }
+
+            const confirmInvest = confirm(`ยืนยันการลงทุนใน "${businessName}" จำนวน ฿${amount.toLocaleString()} ใช่หรือไม่?`);
+            if(!confirmInvest) return;
+
+            // ล็อกปุ่มระหว่างรอ
+            amountInput.disabled = true;
+            btn.disabled = true;
+            btn.innerHTML = "กำลังดำเนินการ...";
+            btn.classList.add('opacity-70');
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "text/plain;charset=utf-8" },
+                    body: JSON.stringify({
+                        action: "invest",
+                        payload: {
+                            studentId: currentUser.studentId,
+                            businessId: businessId,
+                            amount: amount
+                        }
+                    })
+                });
+
+                const result = await response.json();
+                
+                if(result.success) {
+                    alert(`ลงทุนสำเร็จ! คุณได้ลงทุนใน ${businessName} จำนวน ฿${amount.toLocaleString()}`);
+                    amountInput.value = ""; 
+                    
+                    // หักเงินและอัปเดตหน้าจอ
+                    currentBudget -= amount;
+                    localStorage.setItem(`budget_${currentUser.studentId}`, currentBudget);
+                    updateBudgetDisplay();
+                } else {
+                    alert("เกิดข้อผิดพลาด: " + result.message);
+                }
+            } catch (error) {
+                alert("ไม่สามารถเชื่อมต่อกับระบบได้ กรุณาลองใหม่อีกครั้ง");
+            } finally {
+                // ปลดล็อกปุ่ม
+                amountInput.disabled = false;
+                btn.disabled = false;
+                btn.innerHTML = "ยืนยันการลงทุน";
+                btn.classList.remove('opacity-70');
+            }
+        }
+
+        // 7. ฟังก์ชันออกจากระบบ
+        function logout() {
+            if(confirm("ต้องการออกจากระบบใช่หรือไม่?")) {
+                localStorage.removeItem('ventureUser');
+                window.location.href = 'index.html';
+            }
+        }
+
+        // โหลดข้อมูลธุรกิจทันทีที่เปิดหน้าเว็บ
+        loadBusinesses();
+    </script>
+</body>
+</html>
