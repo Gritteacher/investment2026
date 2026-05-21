@@ -4,13 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VentureClass | กระดานลงทุน</title>
-    <!-- ใช้ Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- ฟอนต์ภาษาไทย Prompt -->
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         body { font-family: 'Prompt', sans-serif; }
-        /* ซ่อนลูกศรขึ้นลงในช่อง input number */
         input[type=number]::-webkit-inner-spin-button, 
         input[type=number]::-webkit-outer-spin-button { 
             -webkit-appearance: none; 
@@ -21,7 +19,6 @@
 <body class="bg-gray-50 text-gray-800 p-4 md:p-8 min-h-screen">
 
     <div class="max-w-5xl mx-auto">
-        <!-- Header & Budget Display -->
         <header class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 bg-white p-6 rounded-2xl shadow-sm border border-gray-100 gap-4">
             <div>
                 <h1 class="text-3xl font-semibold text-gray-900 mb-1">กระดานลงทุน</h1>
@@ -32,7 +29,7 @@
             </div>
             <div class="text-left md:text-right w-full md:w-auto bg-gray-50 p-4 rounded-xl border border-gray-100">
                 <p class="text-sm text-gray-500 mb-1">งบประมาณคงเหลือ</p>
-                <p class="text-3xl font-bold text-gray-900">฿ <span id="budgetAvailable">50,000</span></p>
+                <p class="text-3xl font-bold text-gray-900">฿ <span id="budgetAvailable">...</span></p>
             </div>
         </header>
 
@@ -41,7 +38,6 @@
             <button onclick="logout()" class="text-sm text-red-500 hover:text-red-700 transition">ออกจากระบบ</button>
         </div>
         
-        <!-- Grid สำหรับแสดง Card ธุรกิจ -->
         <div id="businessGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <div class="col-span-full text-center py-12">
                 <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mb-4"></div>
@@ -51,19 +47,23 @@
     </div>
 
     <script>
-        // ⚠️ นำ URL ของ Web App ที่ได้จาก Google Apps Script มาวางในเครื่องหมายคำพูดด้านล่างนี้
         const API_URL = "https://script.google.com/macros/s/AKfycby8G6xt7_oukBQlGTaQTwt6Lpnc0gNa4zT3ZgpC0RKmFpj8V59Io0G95FAEPDMLrjQf/exec";
         
-        // 1. ตรวจสอบการล็อกอิน
         const savedUser = localStorage.getItem('ventureUser');
         if(!savedUser) {
-            alert("กรุณาลงทะเบียนก่อนเข้าใช้งาน");
-            window.location.href = 'index.html';
+            Swal.fire({
+                icon: 'warning',
+                title: 'ยังไม่ได้เข้าสู่ระบบ',
+                text: 'กรุณายืนยันตัวตนก่อนเข้าใช้งาน',
+                confirmButtonColor: '#111827'
+            }).then(() => {
+                window.location.href = 'index.html';
+            });
+            throw new Error("Not logged in"); // หยุดสคริปต์ไม่ให้ทำงานต่อ
         }
         const currentUser = JSON.parse(savedUser);
 
-        // 2. จัดการเรื่องงบประมาณ
-        const INITIAL_BUDGET = 50000; // ครูสามารถเปลี่ยนตัวเลขตั้งต้นตรงนี้ได้
+        const INITIAL_BUDGET = 50000; 
         let currentBudget = localStorage.getItem(`budget_${currentUser.studentId}`);
         
         if(!currentBudget) {
@@ -73,7 +73,6 @@
             currentBudget = parseInt(currentBudget);
         }
 
-        // 3. แสดงผลข้อมูลนักเรียนและเงิน
         document.getElementById('studentInfo').innerText = `${currentUser.name} ${currentUser.surname} (ม.${currentUser.class} เลขที่ ${currentUser.number})`;
         updateBudgetDisplay();
 
@@ -81,7 +80,6 @@
             document.getElementById('budgetAvailable').innerText = currentBudget.toLocaleString();
         }
 
-        // 4. ฟังก์ชันดึงธุรกิจจาก Apps Script
         async function loadBusinesses() {
             try {
                 const response = await fetch(API_URL, {
@@ -105,7 +103,6 @@
             }
         }
 
-        // 5. ฟังก์ชันสร้าง Card ธุรกิจ
         function renderBusinesses(businesses) {
             const grid = document.getElementById('businessGrid');
             grid.innerHTML = ""; 
@@ -142,26 +139,34 @@
             });
         }
 
-        // 6. ฟังก์ชันกดปุ่มลงทุน
         async function invest(businessId, businessName) {
             const amountInput = document.getElementById(`amount-${businessId}`);
             const btn = document.getElementById(`btn-${businessId}`);
             const amount = parseInt(amountInput.value);
 
             if(!amount || amount <= 0) {
-                alert("กรุณาระบุจำนวนเงินที่ถูกต้อง (มากกว่า 0)");
+                Swal.fire({ icon: 'warning', title: 'ข้อมูลไม่ถูกต้อง', text: 'กรุณาระบุจำนวนเงินที่ถูกต้อง (มากกว่า 0)', confirmButtonColor: '#111827' });
                 return;
             }
 
             if(amount > currentBudget) {
-                alert("ยอดเงินลงทุนของคุณไม่เพียงพอ!");
+                Swal.fire({ icon: 'error', title: 'ยอดเงินไม่เพียงพอ', text: 'ยอดเงินลงทุนของคุณไม่เพียงพอ!', confirmButtonColor: '#111827' });
                 return;
             }
 
-            const confirmInvest = confirm(`ยืนยันการลงทุนใน "${businessName}" จำนวน ฿${amount.toLocaleString()} ใช่หรือไม่?`);
-            if(!confirmInvest) return;
+            const confirmResult = await Swal.fire({
+                title: 'ยืนยันการลงทุน?',
+                text: `คุณต้องการลงทุนใน "${businessName}" จำนวน ฿${amount.toLocaleString()} ใช่หรือไม่?`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#111827',
+                cancelButtonColor: '#ef4444',
+                confirmButtonText: 'ยืนยันการลงทุน',
+                cancelButtonText: 'ยกเลิก'
+            });
 
-            // ล็อกปุ่มระหว่างรอ
+            if(!confirmResult.isConfirmed) return;
+
             amountInput.disabled = true;
             btn.disabled = true;
             btn.innerHTML = "กำลังดำเนินการ...";
@@ -184,20 +189,23 @@
                 const result = await response.json();
                 
                 if(result.success) {
-                    alert(`ลงทุนสำเร็จ! คุณได้ลงทุนใน ${businessName} จำนวน ฿${amount.toLocaleString()}`);
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'ลงทุนสำเร็จ!',
+                        text: `คุณได้ลงทุนใน ${businessName} จำนวน ฿${amount.toLocaleString()}`,
+                        confirmButtonColor: '#111827'
+                    });
                     amountInput.value = ""; 
                     
-                    // หักเงินและอัปเดตหน้าจอ
                     currentBudget -= amount;
                     localStorage.setItem(`budget_${currentUser.studentId}`, currentBudget);
                     updateBudgetDisplay();
                 } else {
-                    alert("เกิดข้อผิดพลาด: " + result.message);
+                    Swal.fire({ icon: 'error', title: 'ผิดพลาด', text: result.message, confirmButtonColor: '#111827' });
                 }
             } catch (error) {
-                alert("ไม่สามารถเชื่อมต่อกับระบบได้ กรุณาลองใหม่อีกครั้ง");
+                Swal.fire({ icon: 'warning', title: 'ข้อผิดพลาดเครือข่าย', text: 'ไม่สามารถเชื่อมต่อกับระบบได้ กรุณาลองใหม่อีกครั้ง', confirmButtonColor: '#111827' });
             } finally {
-                // ปลดล็อกปุ่ม
                 amountInput.disabled = false;
                 btn.disabled = false;
                 btn.innerHTML = "ยืนยันการลงทุน";
@@ -205,15 +213,24 @@
             }
         }
 
-        // 7. ฟังก์ชันออกจากระบบ
         function logout() {
-            if(confirm("ต้องการออกจากระบบใช่หรือไม่?")) {
-                localStorage.removeItem('ventureUser');
-                window.location.href = 'index.html';
-            }
+            Swal.fire({
+                title: 'ออกจากระบบ?',
+                text: "คุณต้องการออกจากระบบใช่หรือไม่?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: 'ออกจากระบบ',
+                cancelButtonText: 'ยกเลิก'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    localStorage.removeItem('ventureUser');
+                    window.location.href = 'index.html';
+                }
+            });
         }
 
-        // โหลดข้อมูลธุรกิจทันทีที่เปิดหน้าเว็บ
         loadBusinesses();
     </script>
 </body>
