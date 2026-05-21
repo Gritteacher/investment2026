@@ -81,6 +81,15 @@
                         class="w-full bg-gray-900 text-white font-medium py-3.5 rounded-xl hover:bg-gray-800 transition shadow-md mt-2 flex justify-center items-center text-lg">
                         <span>เข้าสู่ระบบ</span>
                     </button>
+
+                    <div class="pt-2 text-center">
+                        <button
+                            type="button"
+                            onclick="openAdminLogin()"
+                            class="text-sm text-gray-500 hover:text-gray-900 transition">
+                            สำหรับครู / เข้าหน้า Admin
+                        </button>
+                    </div>
                 </form>
             </div>
 
@@ -100,6 +109,67 @@
 
     <script>
         const API_URL = "https://script.google.com/macros/s/AKfycby8G6xt7_oukBQlGTaQTwt6Lpnc0gNa4zT3ZgpC0RKmFpj8V59Io0G95FAEPDMLrjQf/exec";
+
+        const ADMIN_PASSWORD_HASH = "e181f213a2a135f3ef45563e2d32b80cd41f1f75307837987b47b9b17670bb3c";
+
+        async function sha256(text) {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(text);
+            const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+
+            return hashArray
+                .map(byte => byte.toString(16).padStart(2, "0"))
+                .join("");
+        }
+
+        async function openAdminLogin() {
+            const result = await Swal.fire({
+                title: "เข้าสู่ระบบสำหรับครู",
+                text: "กรุณากรอกรหัสผ่าน Admin",
+                input: "password",
+                inputPlaceholder: "รหัสผ่าน",
+                showCancelButton: true,
+                confirmButtonText: "เข้าสู่ระบบ",
+                cancelButtonText: "ยกเลิก",
+                confirmButtonColor: "#111827",
+                cancelButtonColor: "#6b7280",
+                inputAttributes: {
+                    autocapitalize: "off",
+                    autocorrect: "off"
+                }
+            });
+
+            if (!result.isConfirmed) {
+                return;
+            }
+
+            const inputPassword = result.value || "";
+            const inputHash = await sha256(inputPassword);
+
+            if (inputHash === ADMIN_PASSWORD_HASH) {
+                sessionStorage.setItem("ventureAdminAuth", "true");
+
+                Swal.fire({
+                    icon: "success",
+                    title: "เข้าสู่ระบบสำเร็จ",
+                    text: "กำลังเข้าสู่หน้า Admin",
+                    confirmButtonColor: "#111827",
+                    timer: 1000,
+                    showConfirmButton: false
+                }).then(() => {
+                    window.location.href = "admin.html";
+                });
+
+            } else {
+                Swal.fire({
+                    icon: "error",
+                    title: "รหัสผ่านไม่ถูกต้อง",
+                    text: "กรุณาลองใหม่อีกครั้ง",
+                    confirmButtonColor: "#111827"
+                });
+            }
+        }
 
         document.getElementById('registerForm').addEventListener('submit', async (e) => {
             e.preventDefault();
