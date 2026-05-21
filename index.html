@@ -4,42 +4,98 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VentureClass | ระบบจำลองการลงทุน by ครูไต๋</title>
+
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <style>
-        body { font-family: 'Prompt', sans-serif; }
+        body {
+            font-family: 'Prompt', sans-serif;
+        }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800 flex items-center justify-center min-h-screen p-4">
+
+<body class="bg-gray-50 text-gray-800 min-h-screen">
     
-    <div class="w-full max-w-md p-8 bg-white rounded-2xl shadow-sm border border-gray-100">
-        <div class="text-center mb-8">
-            <h1 class="text-3xl font-semibold text-gray-900 mb-2">VentureClass</h1>
-            <p class="text-gray-500">เข้าสู่ระบบนักลงทุน</p>
+    <div class="min-h-screen flex flex-col items-center justify-center px-4 py-8">
+        
+        <div class="w-full max-w-md">
+            <div class="w-full p-6 sm:p-8 bg-white rounded-3xl shadow-sm border border-gray-100">
+                <div class="text-center mb-8">
+                    <h1 class="text-4xl sm:text-5xl font-semibold text-gray-900 mb-2 tracking-tight">
+                        VentureClass
+                    </h1>
+                    <p class="text-gray-500 text-base sm:text-lg">
+                        เข้าสู่ระบบนักลงทุน
+                    </p>
+                </div>
+
+                <form id="registerForm" class="space-y-4">
+                    <div>
+                        <label class="block text-sm text-gray-600 mb-2">
+                            รหัสนักเรียน
+                        </label>
+                        <input
+                            type="text"
+                            id="studentId"
+                            required
+                            placeholder="เช่น 12345"
+                            class="w-full px-4 py-3.5 rounded-xl bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-900 transition text-base"
+                        >
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-2">
+                                ชื่อจริง (ไม่ต้องใส่คำนำหน้า)
+                            </label>
+                            <input
+                                type="text"
+                                id="name"
+                                required
+                                placeholder="ครูไต๋"
+                                class="w-full px-4 py-3.5 rounded-xl bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-900 transition text-base"
+                            >
+                        </div>
+
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-2">
+                                นามสกุล
+                            </label>
+                            <input
+                                type="text"
+                                id="surname"
+                                required
+                                placeholder="สุดหล่อ"
+                                class="w-full px-4 py-3.5 rounded-xl bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-900 transition text-base"
+                            >
+                        </div>
+                    </div>
+
+                    <button
+                        type="submit"
+                        id="submitBtn"
+                        class="w-full bg-gray-900 text-white font-medium py-3.5 rounded-xl hover:bg-gray-800 transition shadow-md mt-2 flex justify-center items-center text-lg">
+                        <span>เข้าสู่ระบบ</span>
+                    </button>
+                </form>
+            </div>
+
+            <footer class="mt-6 pb-2 text-center">
+                <div class="inline-block max-w-xs sm:max-w-sm px-5 py-3 bg-white border border-gray-100 rounded-2xl shadow-sm">
+                    <p class="text-sm text-gray-500">
+                        พัฒนาโดย <span class="font-medium text-gray-700">ครูกฤษณพล ทองอุ่น</span>
+                    </p>
+                    <p class="text-xs text-gray-400 mt-1">
+                        โรงเรียนเทพศิรินทร์นนทบุรี
+                    </p>
+                </div>
+            </footer>
         </div>
 
-        <form id="registerForm" class="space-y-4">
-            <div>
-                <label class="block text-sm text-gray-600 mb-1">รหัสนักเรียน</label>
-                <input type="text" id="studentId" required placeholder="เช่น 12345" class="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-900 transition">
-            </div>
-
-            <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-sm text-gray-600 mb-1">ชื่อจริง (ไม่ต้องใส่คำนำหน้า)</label>
-                    <input type="text" id="name" required placeholder="ครูไต๋" class="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-900 transition">
-                </div>
-                <div>
-                    <label class="block text-sm text-gray-600 mb-1">นามสกุล</label>
-                    <input type="text" id="surname" required placeholder="สุดหล่อ" class="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-900 transition">
-                </div>
-            </div>
-
-            <button type="submit" id="submitBtn" class="w-full bg-gray-900 text-white font-medium py-3 rounded-lg hover:bg-gray-800 transition shadow-md mt-4 flex justify-center items-center">
-                <span>เข้าสู่ระบบ</span>
-            </button>
-        </form>
     </div>
 
     <script>
@@ -71,7 +127,7 @@
 
                 const result = await response.json();
                 
-                if(result.success) {
+                if (result.success) {
                     localStorage.setItem('ventureUser', JSON.stringify(result.data));
                     
                     Swal.fire({
@@ -112,16 +168,5 @@
         });
     </script>
 
-    <footer class="mt-10 pb-6 text-center">
-    <div class="inline-block px-5 py-3 bg-white border border-gray-100 rounded-2xl shadow-sm">
-        <p class="text-sm text-gray-500">
-            พัฒนาโดย <span class="font-medium text-gray-700">ครูกฤษณพล ทองอุ่น</span>
-        </p>
-        <p class="text-xs text-gray-400 mt-1">
-            โรงเรียนเทพศิรินทร์นนทบุรี
-        </p>
-    </div>
-</footer>
-    
 </body>
 </html>
