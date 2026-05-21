@@ -7,7 +7,7 @@
 
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
@@ -20,7 +20,7 @@
 
 <body class="bg-gray-50 text-gray-800 p-4 md:p-8 min-h-screen">
 
-    <div class="max-w-6xl mx-auto space-y-8">
+    <div class="max-w-7xl mx-auto space-y-8">
 
         <!-- Header -->
         <header class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -36,11 +36,6 @@
             <button
                 onclick="refreshAll()"
                 class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition text-sm flex items-center gap-2">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
-                    </path>
-                </svg>
                 รีเฟรชข้อมูล
             </button>
         </header>
@@ -114,8 +109,8 @@
                             id="bizClass"
                             required
                             class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-900 transition">
-                            <option value="6/2" selected>ม.6/2</option>
                             <option value="6/1">ม.6/1</option>
+                            <option value="6/2" selected>ม.6/2</option>
                             <option value="6/3">ม.6/3</option>
                             <option value="6/4">ม.6/4</option>
                             <option value="6/5">ม.6/5</option>
@@ -138,11 +133,65 @@
                 </form>
             </div>
 
-            <!-- Leaderboard -->
+            <!-- Leaderboard By Class -->
             <div class="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-                <h2 class="text-xl font-medium text-gray-800 mb-4">
-                    สรุปยอดเงินระดมทุน Leaderboard
-                </h2>
+                <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-5">
+                    <div>
+                        <h2 class="text-xl font-medium text-gray-800">
+                            สรุปยอดเงินระดมทุนรายห้อง
+                        </h2>
+                        <p class="text-sm text-gray-500 mt-1">
+                            เลือกห้องเรียนเพื่อดูธุรกิจเฉพาะห้องนั้น และกดดูรายชื่อนักลงทุน
+                        </p>
+                    </div>
+
+                    <div class="w-full md:w-48">
+                        <label class="block text-sm text-gray-600 mb-1">
+                            เลือกห้องเรียน
+                        </label>
+
+                        <select
+                            id="filterClass"
+                            onchange="loadSummaryByClass()"
+                            class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-900 transition">
+                            <option value="6/1">ม.6/1</option>
+                            <option value="6/2" selected>ม.6/2</option>
+                            <option value="6/3">ม.6/3</option>
+                            <option value="6/4">ม.6/4</option>
+                            <option value="6/5">ม.6/5</option>
+                            <option value="6/6">ม.6/6</option>
+                            <option value="6/7">ม.6/7</option>
+                            <option value="6/8">ม.6/8</option>
+                            <option value="6/9">ม.6/9</option>
+                            <option value="6/10">ม.6/10</option>
+                            <option value="6/11">ม.6/11</option>
+                            <option value="6/12">ม.6/12</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="classSummaryCards" class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5">
+                    <div class="bg-gray-50 rounded-2xl p-4 border border-gray-100">
+                        <p class="text-sm text-gray-500">จำนวนธุรกิจ</p>
+                        <p class="text-2xl font-semibold text-gray-900">
+                            <span id="totalBusinessCount">0</span>
+                        </p>
+                    </div>
+
+                    <div class="bg-gray-50 rounded-2xl p-4 border border-gray-100">
+                        <p class="text-sm text-gray-500">จำนวนครั้งที่ลงทุน</p>
+                        <p class="text-2xl font-semibold text-gray-900">
+                            <span id="totalInvestmentCount">0</span>
+                        </p>
+                    </div>
+
+                    <div class="bg-gray-50 rounded-2xl p-4 border border-gray-100">
+                        <p class="text-sm text-gray-500">ยอดรวมทั้งหมด</p>
+                        <p class="text-2xl font-semibold text-gray-900">
+                            ฿<span id="totalClassAmount">0</span>
+                        </p>
+                    </div>
+                </div>
 
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse">
@@ -150,9 +199,9 @@
                             <tr class="bg-gray-50 text-gray-500 text-sm border-b border-gray-200">
                                 <th class="py-3 px-4 font-medium rounded-tl-lg">อันดับ</th>
                                 <th class="py-3 px-4 font-medium">ชื่อธุรกิจ</th>
-                                <th class="py-3 px-4 font-medium">ห้องเรียน</th>
-                                <th class="py-3 px-4 font-medium text-center">จำนวนนักลงทุน</th>
-                                <th class="py-3 px-4 font-medium text-right rounded-tr-lg">ยอดเงินระดมทุน</th>
+                                <th class="py-3 px-4 font-medium text-center">จำนวนครั้งที่ลงทุน</th>
+                                <th class="py-3 px-4 font-medium text-right">ยอดเงินรวม</th>
+                                <th class="py-3 px-4 font-medium text-center rounded-tr-lg">รายละเอียด</th>
                             </tr>
                         </thead>
 
@@ -169,6 +218,62 @@
 
         </div>
 
+        <!-- Investor Details -->
+        <section class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+            <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-5">
+                <div>
+                    <h2 class="text-xl font-medium text-gray-800">
+                        รายละเอียดนักลงทุนของธุรกิจ
+                    </h2>
+                    <p id="selectedBusinessText" class="text-sm text-gray-500 mt-1">
+                        กดปุ่ม “ดูรายชื่อ” ในตารางด้านบน เพื่อดูว่านักเรียนคนใดลงทุนบ้าง
+                    </p>
+                </div>
+
+                <div class="text-left md:text-right">
+                    <p class="text-sm text-gray-500">ยอดรวมธุรกิจที่เลือก</p>
+                    <p class="text-2xl font-semibold text-gray-900">
+                        ฿<span id="selectedBusinessAmount">0</span>
+                    </p>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-gray-50 text-gray-500 text-sm border-b border-gray-200">
+                            <th class="py-3 px-4 font-medium rounded-tl-lg">ลำดับ</th>
+                            <th class="py-3 px-4 font-medium">รหัสนักเรียน</th>
+                            <th class="py-3 px-4 font-medium">ชื่อ - นามสกุล</th>
+                            <th class="py-3 px-4 font-medium text-center">ห้อง</th>
+                            <th class="py-3 px-4 font-medium text-center">เลขที่</th>
+                            <th class="py-3 px-4 font-medium text-right">ยอดลงทุน</th>
+                            <th class="py-3 px-4 font-medium text-right rounded-tr-lg">เวลา</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="investorTableBody">
+                        <tr>
+                            <td colspan="7" class="py-8 text-center text-gray-400">
+                                ยังไม่ได้เลือกธุรกิจ
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <footer class="mt-6 pb-6 text-center">
+            <div class="inline-block px-5 py-3 bg-white border border-gray-100 rounded-2xl shadow-sm">
+                <p class="text-sm text-gray-500">
+                    พัฒนาโดย <span class="font-medium text-gray-700">ครูกฤษณพล ทองอุ่น</span>
+                </p>
+                <p class="text-xs text-gray-400 mt-1">
+                    โรงเรียนเทพศิรินทร์นนทบุรี
+                </p>
+            </div>
+        </footer>
+
     </div>
 
     <script>
@@ -176,9 +281,6 @@
 
         let investmentOpen = true;
 
-        // ==============================
-        // เพิ่มธุรกิจใหม่
-        // ==============================
         document.getElementById('addBusinessForm').addEventListener('submit', async (e) => {
             e.preventDefault();
 
@@ -220,7 +322,8 @@
                     document.getElementById('addBusinessForm').reset();
                     document.getElementById('bizClass').value = '6/2';
 
-                    loadSummary();
+                    document.getElementById('filterClass').value = payload.class;
+                    loadSummaryByClass();
 
                 } else {
                     Swal.fire({
@@ -232,8 +335,6 @@
                 }
 
             } catch (error) {
-                console.error(error);
-
                 Swal.fire({
                     icon: 'error',
                     title: 'ข้อผิดพลาดเครือข่าย',
@@ -247,9 +348,6 @@
             }
         });
 
-        // ==============================
-        // โหลดสถานะเปิด/ปิดระบบลงทุน
-        // ==============================
         async function loadInvestmentStatus() {
             const statusText = document.getElementById('investmentStatusText');
             const statusBadge = document.getElementById('statusBadge');
@@ -277,7 +375,6 @@
                 if (result.success) {
                     investmentOpen = result.open === true;
                     renderInvestmentStatus();
-
                 } else {
                     statusText.innerText = result.message || "ไม่สามารถตรวจสอบสถานะระบบได้";
                     statusBadge.innerText = "ผิดพลาด";
@@ -287,8 +384,6 @@
                 }
 
             } catch (error) {
-                console.error(error);
-
                 statusText.innerText = "เกิดข้อผิดพลาดในการเชื่อมต่อ";
                 statusBadge.innerText = "เชื่อมต่อไม่ได้";
                 statusBadge.className = "px-4 py-2 rounded-full text-sm font-medium bg-red-100 text-red-700";
@@ -319,17 +414,14 @@
             }
         }
 
-        // ==============================
-        // กดเปิด/ปิดระบบลงทุน
-        // ==============================
         async function toggleInvestmentStatus() {
             const newStatus = !investmentOpen;
 
             const confirmResult = await Swal.fire({
                 title: newStatus ? "เปิดระบบการลงทุน?" : "ปิดระบบการลงทุน?",
                 text: newStatus
-                    ? "เมื่อนักเรียนเข้าสู่ระบบ จะสามารถกดลงทุนได้"
-                    : "เมื่อนักเรียนกดลงทุน ระบบจะไม่อนุญาตให้บันทึกการลงทุนใหม่",
+                    ? "นักเรียนจะสามารถกดลงทุนได้"
+                    : "นักเรียนจะไม่สามารถลงทุนเพิ่มเติมได้",
                 icon: "question",
                 showCancelButton: true,
                 confirmButtonColor: newStatus ? "#16a34a" : "#dc2626",
@@ -338,9 +430,7 @@
                 cancelButtonText: "ยกเลิก"
             });
 
-            if (!confirmResult.isConfirmed) {
-                return;
-            }
+            if (!confirmResult.isConfirmed) return;
 
             const toggleBtn = document.getElementById('toggleInvestmentBtn');
             toggleBtn.disabled = true;
@@ -374,7 +464,6 @@
                         timer: 1500,
                         showConfirmButton: false
                     });
-
                 } else {
                     Swal.fire({
                         icon: "error",
@@ -382,34 +471,30 @@
                         text: result.message || "ไม่สามารถเปลี่ยนสถานะระบบได้",
                         confirmButtonColor: "#111827"
                     });
-
                     renderInvestmentStatus();
                 }
 
             } catch (error) {
-                console.error(error);
-
                 Swal.fire({
                     icon: "error",
                     title: "ข้อผิดพลาดเครือข่าย",
                     text: "ไม่สามารถเชื่อมต่อกับระบบได้",
                     confirmButtonColor: "#111827"
                 });
-
                 renderInvestmentStatus();
             }
         }
 
-        // ==============================
-        // โหลด Summary
-        // ==============================
-        async function loadSummary() {
+        async function loadSummaryByClass() {
+            const selectedClass = document.getElementById('filterClass').value;
             const tbody = document.getElementById('summaryTableBody');
+
+            clearInvestorDetails();
 
             tbody.innerHTML = `
                 <tr>
                     <td colspan="5" class="py-8 text-center text-gray-500">
-                        กำลังดึงข้อมูลล่าสุด...
+                        กำลังโหลดข้อมูลของห้อง ม.${selectedClass}...
                     </td>
                 </tr>
             `;
@@ -421,14 +506,17 @@
                         "Content-Type": "text/plain;charset=utf-8"
                     },
                     body: JSON.stringify({
-                        action: "getSummary"
+                        action: "getSummaryByClass",
+                        payload: {
+                            class: selectedClass
+                        }
                     })
                 });
 
                 const result = await response.json();
 
                 if (result.success) {
-                    renderTable(result.data);
+                    renderClassSummary(result.data);
                 } else {
                     tbody.innerHTML = `
                         <tr>
@@ -440,8 +528,6 @@
                 }
 
             } catch (error) {
-                console.error(error);
-
                 tbody.innerHTML = `
                     <tr>
                         <td colspan="5" class="py-8 text-center text-red-500">
@@ -452,15 +538,23 @@
             }
         }
 
-        function renderTable(data) {
+        function renderClassSummary(data) {
             const tbody = document.getElementById('summaryTableBody');
             tbody.innerHTML = "";
 
+            let totalBusinessCount = data ? data.length : 0;
+            let totalInvestmentCount = 0;
+            let totalClassAmount = 0;
+
             if (!data || data.length === 0) {
+                document.getElementById('totalBusinessCount').innerText = "0";
+                document.getElementById('totalInvestmentCount').innerText = "0";
+                document.getElementById('totalClassAmount').innerText = "0";
+
                 tbody.innerHTML = `
                     <tr>
                         <td colspan="5" class="py-8 text-center text-gray-500">
-                            ยังไม่มีข้อมูลธุรกิจ
+                            ยังไม่มีธุรกิจของห้องนี้
                         </td>
                     </tr>
                 `;
@@ -468,6 +562,9 @@
             }
 
             data.forEach((item, index) => {
+                totalInvestmentCount += Number(item.investorCount || 0);
+                totalClassAmount += Number(item.totalAmount || 0);
+
                 let rankStyle = "text-gray-600";
 
                 if (index === 0) {
@@ -481,56 +578,181 @@
                 const totalAmount = Number(item.totalAmount || 0);
                 const investorCount = Number(item.investorCount || 0);
 
-                const row = `
+                tbody.innerHTML += `
                     <tr class="border-b border-gray-100 hover:bg-gray-50 transition">
                         <td class="py-4 px-4 ${rankStyle}">
                             ${index + 1}
                         </td>
 
-                        <td class="py-4 px-4 font-medium text-gray-900">
-                            ${item.name}
-                        </td>
-
-                        <td class="py-4 px-4 text-gray-600">
-                            ม.${item.class}
+                        <td class="py-4 px-4">
+                            <div class="font-medium text-gray-900">${escapeHtml(item.name)}</div>
+                            <div class="text-xs text-gray-400 mt-1">${escapeHtml(item.description || '')}</div>
                         </td>
 
                         <td class="py-4 px-4 text-center text-gray-600">
-                            ${investorCount} คน
+                            ${investorCount} ครั้ง
                         </td>
 
                         <td class="py-4 px-4 text-right font-semibold text-gray-900">
                             ฿${totalAmount.toLocaleString()}
                         </td>
+
+                        <td class="py-4 px-4 text-center">
+                            <button
+                                onclick="loadBusinessInvestors('${item.id}')"
+                                class="px-3 py-2 text-sm rounded-lg bg-gray-900 text-white hover:bg-gray-800 transition">
+                                ดูรายชื่อ
+                            </button>
+                        </td>
                     </tr>
                 `;
+            });
 
-                tbody.innerHTML += row;
+            document.getElementById('totalBusinessCount').innerText = totalBusinessCount.toLocaleString();
+            document.getElementById('totalInvestmentCount').innerText = totalInvestmentCount.toLocaleString();
+            document.getElementById('totalClassAmount').innerText = totalClassAmount.toLocaleString();
+        }
+
+        async function loadBusinessInvestors(businessId) {
+            const tbody = document.getElementById('investorTableBody');
+
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="7" class="py-8 text-center text-gray-500">
+                        กำลังโหลดรายชื่อนักลงทุน...
+                    </td>
+                </tr>
+            `;
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "text/plain;charset=utf-8"
+                    },
+                    body: JSON.stringify({
+                        action: "getBusinessInvestors",
+                        payload: {
+                            businessId: businessId
+                        }
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    renderBusinessInvestors(result);
+                } else {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="7" class="py-8 text-center text-red-500">
+                                ${result.message || 'ดึงรายชื่อนักลงทุนล้มเหลว'}
+                            </td>
+                        </tr>
+                    `;
+                }
+
+            } catch (error) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="py-8 text-center text-red-500">
+                            เกิดข้อผิดพลาดในการเชื่อมต่อเครือข่าย
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+
+        function renderBusinessInvestors(result) {
+            const tbody = document.getElementById('investorTableBody');
+            const business = result.business;
+            const investors = result.investors || [];
+
+            document.getElementById('selectedBusinessText').innerText =
+                `${business.name} | ห้อง ม.${business.class} | มีการลงทุน ${result.investorCount} ครั้ง`;
+
+            document.getElementById('selectedBusinessAmount').innerText =
+                Number(result.totalAmount || 0).toLocaleString();
+
+            tbody.innerHTML = "";
+
+            if (investors.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="py-8 text-center text-gray-400">
+                            ยังไม่มีนักเรียนลงทุนในธุรกิจนี้
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            investors.forEach((item, index) => {
+                tbody.innerHTML += `
+                    <tr class="border-b border-gray-100 hover:bg-gray-50 transition text-sm">
+                        <td class="py-4 px-4 text-gray-500">
+                            ${index + 1}
+                        </td>
+
+                        <td class="py-4 px-4 text-gray-600">
+                            ${escapeHtml(item.studentId)}
+                        </td>
+
+                        <td class="py-4 px-4 font-medium text-gray-900">
+                            ${escapeHtml(item.name)} ${escapeHtml(item.surname)}
+                        </td>
+
+                        <td class="py-4 px-4 text-center text-gray-600">
+                            ม.${escapeHtml(item.class)}
+                        </td>
+
+                        <td class="py-4 px-4 text-center text-gray-600">
+                            ${escapeHtml(item.number)}
+                        </td>
+
+                        <td class="py-4 px-4 text-right font-semibold text-emerald-600">
+                            ฿${Number(item.amount || 0).toLocaleString()}
+                        </td>
+
+                        <td class="py-4 px-4 text-right text-gray-500">
+                            ${escapeHtml(item.timestamp)}
+                        </td>
+                    </tr>
+                `;
             });
         }
 
-        // ==============================
-        // รีเฟรชทั้งหมด
-        // ==============================
-        function refreshAll() {
-            loadInvestmentStatus();
-            loadSummary();
+        function clearInvestorDetails() {
+            document.getElementById('selectedBusinessText').innerText =
+                "กดปุ่ม “ดูรายชื่อ” ในตารางด้านบน เพื่อดูว่านักเรียนคนใดลงทุนบ้าง";
+
+            document.getElementById('selectedBusinessAmount').innerText = "0";
+
+            document.getElementById('investorTableBody').innerHTML = `
+                <tr>
+                    <td colspan="7" class="py-8 text-center text-gray-400">
+                        ยังไม่ได้เลือกธุรกิจ
+                    </td>
+                </tr>
+            `;
         }
 
-        // เริ่มโหลดข้อมูล
+        function refreshAll() {
+            loadInvestmentStatus();
+            loadSummaryByClass();
+        }
+
+        function escapeHtml(text) {
+            return String(text ?? "")
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
         refreshAll();
     </script>
 
-    <footer class="mt-10 pb-6 text-center">
-    <div class="inline-block px-5 py-3 bg-white border border-gray-100 rounded-2xl shadow-sm">
-        <p class="text-sm text-gray-500">
-            พัฒนาโดย <span class="font-medium text-gray-700">ครูกฤษณพล ทองอุ่น</span>
-        </p>
-        <p class="text-xs text-gray-400 mt-1">
-            โรงเรียนเทพศิรินทร์นนทบุรี
-        </p>
-    </div>
-</footer>
-    
 </body>
 </html>
