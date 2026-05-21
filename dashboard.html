@@ -138,7 +138,7 @@
                     let totalInvested = result.data.reduce((sum, item) => sum + item.amount, 0);
                     currentBudget = INITIAL_BUDGET - totalInvested;
                     
-                    document.getElementById('budgetAvailable').innerText = `฿ ${currentBudget.toLocaleString()}`;
+                    document.getElementById('budgetAvailable').innerText = ${currentBudget.toLocaleString()}`;
                     renderHistoryTable(result.data);
                 }
             } catch (error) {
