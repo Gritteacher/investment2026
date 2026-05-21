@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VentureClass | Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Prompt', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 p-4 md:p-8 min-h-screen">
+
+    <div class="max-w-6xl mx-auto space-y-8">
+        
+        <!-- Header -->
+        <header class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex justify-between items-center">
+            <div>
+                <h1 class="text-3xl font-semibold text-gray-900">ระบบจัดการผู้สอน (Admin)</h1>
+                <p class="text-gray-500 mt-1">VentureClass - ควบคุมการจำลองการลงทุน</p>
+            </div>
+            <button onclick="loadSummary()" class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition text-sm flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                รีเฟรชข้อมูล
+            </button>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- ส่วนเพิ่มธุรกิจ (ซ้าย) -->
+            <div class="lg:col-span-1 bg-white p-6 rounded-2xl shadow-sm border border-gray-100 h-fit">
+                <h2 class="text-xl font-medium text-gray-800 mb-4">เพิ่มธุรกิจใหม่</h2>
+                <form id="addBusinessForm" class="space-y-4">
+                    <div>
+                        <label class="block text-sm text-gray-600 mb-1">ชื่อธุรกิจ / โครงการ</label>
+                        <input type="text" id="bizName" required class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-900 transition">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-600 mb-1">รายละเอียด</label>
+                        <textarea id="bizDesc" rows="3" required class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-900 transition"></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-600 mb-1">ห้องเรียนที่ระดมทุน</label>
+                        <select id="bizClass" required class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-900 transition">
+                            <option value="6/2" selected>ม.6/2</option>
+                            <option value="6/1">ม.6/1</option>
+                            <option value="6/3">ม.6/3</option>
+                            <option value="6/4">ม.6/4</option>
+                            <option value="6/5">ม.6/5</option>
+                            <option value="6/6">ม.6/6</option>
+                            <option value="6/7">ม.6/7</option>
+                            <option value="6/8">ม.6/8</option>
+                            <option value="6/9">ม.6/9</option>
+                            <option value="6/10">ม.6/10</option>
+                            <option value="6/11">ม.6/11</option>
+                            <option value="6/12">ม.6/12</option>
+                        </select>
+                    </div>
+                    <button type="submit" id="submitBtn" class="w-full py-3 bg-gray-900 text-white font-medium rounded-xl hover:bg-gray-800 transition">
+                        เพิ่มธุรกิจ
+                    </button>
+                </form>
+            </div>
+
+            <!-- ส่วนสรุปผลการลงทุน (ขวา) -->
+            <div class="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                <h2 class="text-xl font-medium text-gray-800 mb-4">สรุปยอดเงินระดมทุน (Leaderboard)</h2>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-gray-50 text-gray-500 text-sm border-b border-gray-200">
+                                <th class="py-3 px-4 font-medium rounded-tl-lg">อันดับ</th>
+                                <th class="py-3 px-4 font-medium">ชื่อธุรกิจ</th>
+                                <th class="py-3 px-4 font-medium">ห้องเรียน</th>
+                                <th class="py-3 px-4 font-medium text-center">จำนวนนักลงทุน</th>
+                                <th class="py-3 px-4 font-medium text-right rounded-tr-lg">ยอดเงินระดมทุน (฿)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="summaryTableBody">
+                            <tr>
+                                <td colspan="5" class="py-8 text-center text-gray-500">กำลังโหลดข้อมูล...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // ⚠️ นำ URL ของ Web App มาวางที่นี่
+        const API_URL = "https://script.google.com/macros/s/AKfycby8G6xt7_oukBQlGTaQTwt6Lpnc0gNa4zT3ZgpC0RKmFpj8V59Io0G95FAEPDMLrjQf/exec";
+
+        // 1. ฟังก์ชันเพิ่มธุรกิจ
+        document.getElementById('addBusinessForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.innerHTML = "กำลังบันทึก...";
+            submitBtn.disabled = true;
+
+            const payload = {
+                name: document.getElementById('bizName').value,
+                description: document.getElementById('bizDesc').value,
+                class: document.getElementById('bizClass').value
+            };
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "text/plain;charset=utf-8" },
+                    body: JSON.stringify({
+                        action: "addBusiness",
+                        payload: payload
+                    })
+                });
+
+                const result = await response.json();
+                
+                if(result.success) {
+                    alert("เพิ่มธุรกิจเรียบร้อยแล้ว");
+                    document.getElementById('addBusinessForm').reset();
+                    // เซ็ตค่ากลับไปที่ 6/2 หลังเคลียร์ฟอร์ม
+                    document.getElementById('bizClass').value = '6/2';
+                    loadSummary(); // โหลดตารางใหม่ทันที
+                }
+            } catch (error) {
+                alert("เกิดข้อผิดพลาดในการเชื่อมต่อ");
+            } finally {
+                submitBtn.innerHTML = "เพิ่มธุรกิจ";
+                submitBtn.disabled = false;
+            }
+        });
+
+        // 2. ฟังก์ชันโหลดข้อมูลสรุป
+        async function loadSummary() {
+            const tbody = document.getElementById('summaryTableBody');
+            tbody.innerHTML = `<tr><td colspan="5" class="py-8 text-center text-gray-500">กำลังดึงข้อมูลล่าสุด...</td></tr>`;
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "text/plain;charset=utf-8" },
+                    body: JSON.stringify({ action: "getSummary" })
+                });
+
+                const result = await response.json();
+                
+                if(result.success) {
+                    renderTable(result.data);
+                } else {
+                    tbody.innerHTML = `<tr><td colspan="5" class="py-8 text-center text-red-500">ดึงข้อมูลล้มเหลว</td></tr>`;
+                }
+            } catch (error) {
+                tbody.innerHTML = `<tr><td colspan="5" class="py-8 text-center text-red-500">เกิดข้อผิดพลาดในการเชื่อมต่อเครือข่าย</td></tr>`;
+            }
+        }
+
+        // 3. ฟังก์ชันสร้างตาราง
+        function renderTable(data) {
+            const tbody = document.getElementById('summaryTableBody');
+            tbody.innerHTML = "";
+
+            if(data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="py-8 text-center text-gray-500">ยังไม่มีข้อมูลธุรกิจ</td></tr>`;
+                return;
+            }
+
+            data.forEach((item, index) => {
+                // จัดสไตล์ให้ 3 อันดับแรกดูเด่นขึ้น
+                let rankStyle = "text-gray-600";
+                if(index === 0) rankStyle = "font-bold text-yellow-500 text-lg";
+                else if(index === 1) rankStyle = "font-bold text-gray-400 text-lg";
+                else if(index === 2) rankStyle = "font-bold text-amber-700 text-lg";
+
+                const row = `
+                    <tr class="border-b border-gray-100 hover:bg-gray-50 transition">
+                        <td class="py-4 px-4 ${rankStyle}">${index + 1}</td>
+                        <td class="py-4 px-4 font-medium text-gray-900">${item.name}</td>
+                        <td class="py-4 px-4 text-gray-600">ม.${item.class}</td>
+                        <td class="py-4 px-4 text-center text-gray-600">${item.investorCount} คน</td>
+                        <td class="py-4 px-4 text-right font-semibold text-gray-900">฿${item.totalAmount.toLocaleString()}</td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+        }
+
+        // โหลดตารางทันทีเมื่อเปิดหน้า Admin
+        loadSummary();
+    </script>
+</body>
+</html>
