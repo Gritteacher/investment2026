@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VentureClass | ระบบจำลองการลงทุน</title>
+    <title>VentureClass | ระบบจำลองการลงทุน by ครูไต๋</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -16,7 +16,7 @@
     <div class="w-full max-w-md p-8 bg-white rounded-2xl shadow-sm border border-gray-100">
         <div class="text-center mb-8">
             <h1 class="text-3xl font-semibold text-gray-900 mb-2">VentureClass</h1>
-            <p class="text-gray-500">ตรวจสอบสิทธิ์และเข้าสู่ระบบนักลงทุน</p>
+            <p class="text-gray-500">เข้าสู่ระบบนักลงทุน</p>
         </div>
 
         <form id="registerForm" class="space-y-4">
@@ -28,16 +28,16 @@
             <div class="grid grid-cols-2 gap-4">
                 <div>
                     <label class="block text-sm text-gray-600 mb-1">ชื่อจริง (ไม่ต้องใส่คำนำหน้า)</label>
-                    <input type="text" id="name" required placeholder="สมชาย" class="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-900 transition">
+                    <input type="text" id="name" required placeholder="ครูไต๋" class="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-900 transition">
                 </div>
                 <div>
                     <label class="block text-sm text-gray-600 mb-1">นามสกุล</label>
-                    <input type="text" id="surname" required placeholder="ใจดี" class="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-900 transition">
+                    <input type="text" id="surname" required placeholder="สุดหล่อ" class="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-900 transition">
                 </div>
             </div>
 
             <button type="submit" id="submitBtn" class="w-full bg-gray-900 text-white font-medium py-3 rounded-lg hover:bg-gray-800 transition shadow-md mt-4 flex justify-center items-center">
-                <span>ยืนยันตัวตนเข้าสู่ระบบ</span>
+                <span>เข้าสู่ระบบ</span>
             </button>
         </form>
     </div>
@@ -49,7 +49,7 @@
             e.preventDefault();
             
             const submitBtn = document.getElementById('submitBtn');
-            submitBtn.innerHTML = "กำลังตรวจสอบสิทธิ์...";
+            submitBtn.innerHTML = "กำลังเข้าสู่ระบบ...";
             submitBtn.disabled = true;
             submitBtn.classList.add('opacity-70');
             
@@ -105,7 +105,7 @@
             }
 
             function resetButton() {
-                submitBtn.innerHTML = "ยืนยันตัวตนเข้าสู่ระบบ";
+                submitBtn.innerHTML = "เข้าสู่ระบบ";
                 submitBtn.disabled = false;
                 submitBtn.classList.remove('opacity-70');
             }
