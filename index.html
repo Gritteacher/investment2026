@@ -6,6 +6,7 @@
     <title>VentureClass | ระบบจำลองการลงทุน</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         body { font-family: 'Prompt', sans-serif; }
     </style>
@@ -42,7 +43,6 @@
     </div>
 
     <script>
-        // ⚠️ ใส่ URL Web App ของครูตรงนี้
         const API_URL = "https://script.google.com/macros/s/AKfycby8G6xt7_oukBQlGTaQTwt6Lpnc0gNa4zT3ZgpC0RKmFpj8V59Io0G95FAEPDMLrjQf/exec";
 
         document.getElementById('registerForm').addEventListener('submit', async (e) => {
@@ -72,15 +72,35 @@
                 const result = await response.json();
                 
                 if(result.success) {
-                    // นำข้อมูลจริงที่ผ่านการยืนยันจากตารางครู (มีห้องและเลขที่พร้อม) บันทึกเข้าเครื่องนักเรียน
                     localStorage.setItem('ventureUser', JSON.stringify(result.data));
-                    window.location.href = 'dashboard.html';
+                    
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'สำเร็จ!',
+                        text: result.message,
+                        confirmButtonColor: '#111827',
+                        timer: 1500,
+                        showConfirmButton: false
+                    }).then(() => {
+                        window.location.href = 'dashboard.html';
+                    });
+                    
                 } else {
-                    alert("เข้าสู่ระบบไม่สำเร็จ: " + result.message);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'เข้าสู่ระบบไม่สำเร็จ',
+                        text: result.message,
+                        confirmButtonColor: '#111827'
+                    });
                     resetButton();
                 }
             } catch (error) {
-                alert("ไม่สามารถเชื่อมต่อระบบได้ กรุณาลองใหม่อีกครั้ง");
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'ข้อผิดพลาดเครือข่าย',
+                    text: 'ไม่สามารถเชื่อมต่อระบบได้ กรุณาลองใหม่อีกครั้ง',
+                    confirmButtonColor: '#111827'
+                });
                 resetButton();
             }
 
