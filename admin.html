@@ -22,7 +22,6 @@
 
     <div class="max-w-7xl mx-auto space-y-8">
 
-        <!-- Header -->
         <header class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
                 <h1 class="text-3xl font-semibold text-gray-900">
@@ -33,14 +32,21 @@
                 </p>
             </div>
 
-            <button
-                onclick="refreshAll()"
-                class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition text-sm flex items-center gap-2">
-                รีเฟรชข้อมูล
-            </button>
+            <div class="flex flex-wrap gap-2">
+                <button
+                    onclick="refreshAll()"
+                    class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition text-sm">
+                    รีเฟรชข้อมูล
+                </button>
+
+                <button
+                    onclick="logoutAdmin()"
+                    class="px-4 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition text-sm">
+                    ออกจาก Admin
+                </button>
+            </div>
         </header>
 
-        <!-- Investment Status Control -->
         <section class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
             <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <div>
@@ -69,7 +75,6 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-            <!-- Add Business -->
             <div class="lg:col-span-1 bg-white p-6 rounded-2xl shadow-sm border border-gray-100 h-fit">
                 <h2 class="text-xl font-medium text-gray-800 mb-4">
                     เพิ่มธุรกิจใหม่
@@ -133,7 +138,6 @@
                 </form>
             </div>
 
-            <!-- Leaderboard By Class -->
             <div class="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
                 <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-5">
                     <div>
@@ -218,7 +222,6 @@
 
         </div>
 
-        <!-- Investor Details -->
         <section class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
             <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-5">
                 <div>
@@ -279,7 +282,74 @@
     <script>
         const API_URL = "https://script.google.com/macros/s/AKfycby8G6xt7_oukBQlGTaQTwt6Lpnc0gNa4zT3ZgpC0RKmFpj8V59Io0G95FAEPDMLrjQf/exec";
 
+        const ADMIN_PASSWORD_HASH = "e181f213a2a135f3ef45563e2d32b80cd41f1f75307837987b47b9b17670bb3c";
+
         let investmentOpen = true;
+
+        async function sha256(text) {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(text);
+            const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+
+            return hashArray
+                .map(byte => byte.toString(16).padStart(2, "0"))
+                .join("");
+        }
+
+        async function checkAdminAuth() {
+            const isAuth = sessionStorage.getItem("ventureAdminAuth");
+
+            if (isAuth === "true") {
+                return true;
+            }
+
+            const result = await Swal.fire({
+                title: "Admin Login",
+                text: "กรุณากรอกรหัสผ่านสำหรับครู",
+                input: "password",
+                inputPlaceholder: "รหัสผ่าน",
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                showCancelButton: true,
+                confirmButtonText: "เข้าสู่ระบบ",
+                cancelButtonText: "กลับหน้าแรก",
+                confirmButtonColor: "#111827",
+                cancelButtonColor: "#6b7280",
+                inputAttributes: {
+                    autocapitalize: "off",
+                    autocorrect: "off"
+                }
+            });
+
+            if (!result.isConfirmed) {
+                window.location.href = "index.html";
+                return false;
+            }
+
+            const inputPassword = result.value || "";
+            const inputHash = await sha256(inputPassword);
+
+            if (inputHash === ADMIN_PASSWORD_HASH) {
+                sessionStorage.setItem("ventureAdminAuth", "true");
+                return true;
+            }
+
+            await Swal.fire({
+                icon: "error",
+                title: "รหัสผ่านไม่ถูกต้อง",
+                text: "ไม่สามารถเข้าหน้า Admin ได้",
+                confirmButtonColor: "#111827"
+            });
+
+            window.location.href = "index.html";
+            return false;
+        }
+
+        function logoutAdmin() {
+            sessionStorage.removeItem("ventureAdminAuth");
+            window.location.href = "index.html";
+        }
 
         document.getElementById('addBusinessForm').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -751,7 +821,11 @@
                 .replace(/'/g, "&#039;");
         }
 
-        refreshAll();
+        checkAdminAuth().then((ok) => {
+            if (ok) {
+                refreshAll();
+            }
+        });
     </script>
 
 </body>
