@@ -4,44 +4,116 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VentureClass | Admin Dashboard</title>
+
     <script src="https://cdn.tailwindcss.com"></script>
+
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <style>
-        body { font-family: 'Prompt', sans-serif; }
+        body {
+            font-family: 'Prompt', sans-serif;
+        }
     </style>
 </head>
+
 <body class="bg-gray-50 text-gray-800 p-4 md:p-8 min-h-screen">
 
     <div class="max-w-6xl mx-auto space-y-8">
-        
-        <header class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex justify-between items-center">
+
+        <!-- Header -->
+        <header class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
-                <h1 class="text-3xl font-semibold text-gray-900">ควบคุมการจำลองการลงทุน</h1>
-                <p class="text-gray-500 mt-1">VentureClass - ควบคุมการจำลองการลงทุน</p>
+                <h1 class="text-3xl font-semibold text-gray-900">
+                    ควบคุมการจำลองการลงทุน
+                </h1>
+                <p class="text-gray-500 mt-1">
+                    VentureClass - สำหรับครูผู้ดูแลระบบ
+                </p>
             </div>
-            <button onclick="loadSummary()" class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition text-sm flex items-center gap-2">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+
+            <button
+                onclick="refreshAll()"
+                class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition text-sm flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
+                    </path>
+                </svg>
                 รีเฟรชข้อมูล
             </button>
         </header>
 
+        <!-- Investment Status Control -->
+        <section class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div>
+                    <h2 class="text-xl font-medium text-gray-800 mb-1">
+                        สถานะระบบการลงทุน
+                    </h2>
+                    <p id="investmentStatusText" class="text-gray-500">
+                        กำลังตรวจสอบสถานะระบบ...
+                    </p>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <span id="statusBadge" class="px-4 py-2 rounded-full text-sm font-medium bg-gray-100 text-gray-600">
+                        กำลังโหลด
+                    </span>
+
+                    <button
+                        id="toggleInvestmentBtn"
+                        onclick="toggleInvestmentStatus()"
+                        class="px-5 py-3 rounded-xl bg-gray-900 text-white hover:bg-gray-800 transition font-medium disabled:opacity-60 disabled:cursor-not-allowed">
+                        กำลังโหลด...
+                    </button>
+                </div>
+            </div>
+        </section>
+
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            
+
+            <!-- Add Business -->
             <div class="lg:col-span-1 bg-white p-6 rounded-2xl shadow-sm border border-gray-100 h-fit">
-                <h2 class="text-xl font-medium text-gray-800 mb-4">เพิ่มธุรกิจใหม่</h2>
+                <h2 class="text-xl font-medium text-gray-800 mb-4">
+                    เพิ่มธุรกิจใหม่
+                </h2>
+
                 <form id="addBusinessForm" class="space-y-4">
                     <div>
-                        <label class="block text-sm text-gray-600 mb-1">ชื่อธุรกิจ / โครงการ</label>
-                        <input type="text" id="bizName" required class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-900 transition">
+                        <label class="block text-sm text-gray-600 mb-1">
+                            ชื่อธุรกิจ / โครงการ
+                        </label>
+
+                        <input
+                            type="text"
+                            id="bizName"
+                            required
+                            class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-900 transition">
                     </div>
+
                     <div>
-                        <label class="block text-sm text-gray-600 mb-1">รายละเอียด</label>
-                        <textarea id="bizDesc" rows="3" required class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-900 transition"></textarea>
+                        <label class="block text-sm text-gray-600 mb-1">
+                            รายละเอียด
+                        </label>
+
+                        <textarea
+                            id="bizDesc"
+                            rows="3"
+                            required
+                            class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-900 transition"></textarea>
                     </div>
+
                     <div>
-                        <label class="block text-sm text-gray-600 mb-1">ห้องเรียนที่ระดมทุน</label>
-                        <select id="bizClass" required class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-900 transition">
+                        <label class="block text-sm text-gray-600 mb-1">
+                            ห้องเรียนที่ระดมทุน
+                        </label>
+
+                        <select
+                            id="bizClass"
+                            required
+                            class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-900 transition">
                             <option value="6/2" selected>ม.6/2</option>
                             <option value="6/1">ม.6/1</option>
                             <option value="6/3">ม.6/3</option>
@@ -56,14 +128,22 @@
                             <option value="6/12">ม.6/12</option>
                         </select>
                     </div>
-                    <button type="submit" id="submitBtn" class="w-full py-3 bg-gray-900 text-white font-medium rounded-xl hover:bg-gray-800 transition">
+
+                    <button
+                        type="submit"
+                        id="submitBtn"
+                        class="w-full py-3 bg-gray-900 text-white font-medium rounded-xl hover:bg-gray-800 transition">
                         เพิ่มธุรกิจ
                     </button>
                 </form>
             </div>
 
+            <!-- Leaderboard -->
             <div class="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-                <h2 class="text-xl font-medium text-gray-800 mb-4">สรุปยอดเงินระดมทุน (Leaderboard)</h2>
+                <h2 class="text-xl font-medium text-gray-800 mb-4">
+                    สรุปยอดเงินระดมทุน Leaderboard
+                </h2>
+
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse">
                         <thead>
@@ -72,12 +152,15 @@
                                 <th class="py-3 px-4 font-medium">ชื่อธุรกิจ</th>
                                 <th class="py-3 px-4 font-medium">ห้องเรียน</th>
                                 <th class="py-3 px-4 font-medium text-center">จำนวนนักลงทุน</th>
-                                <th class="py-3 px-4 font-medium text-right rounded-tr-lg">ยอดเงินระดมทุน (฿)</th>
+                                <th class="py-3 px-4 font-medium text-right rounded-tr-lg">ยอดเงินระดมทุน</th>
                             </tr>
                         </thead>
+
                         <tbody id="summaryTableBody">
                             <tr>
-                                <td colspan="5" class="py-8 text-center text-gray-500">กำลังโหลดข้อมูล...</td>
+                                <td colspan="5" class="py-8 text-center text-gray-500">
+                                    กำลังโหลดข้อมูล...
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -85,28 +168,37 @@
             </div>
 
         </div>
+
     </div>
 
     <script>
         const API_URL = "https://script.google.com/macros/s/AKfycby8G6xt7_oukBQlGTaQTwt6Lpnc0gNa4zT3ZgpC0RKmFpj8V59Io0G95FAEPDMLrjQf/exec";
 
+        let investmentOpen = true;
+
+        // ==============================
+        // เพิ่มธุรกิจใหม่
+        // ==============================
         document.getElementById('addBusinessForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            
+
             const submitBtn = document.getElementById('submitBtn');
+
             submitBtn.innerHTML = "กำลังบันทึก...";
             submitBtn.disabled = true;
 
             const payload = {
-                name: document.getElementById('bizName').value,
-                description: document.getElementById('bizDesc').value,
+                name: document.getElementById('bizName').value.trim(),
+                description: document.getElementById('bizDesc').value.trim(),
                 class: document.getElementById('bizClass').value
             };
 
             try {
                 const response = await fetch(API_URL, {
                     method: "POST",
-                    headers: { "Content-Type": "text/plain;charset=utf-8" },
+                    headers: {
+                        "Content-Type": "text/plain;charset=utf-8"
+                    },
                     body: JSON.stringify({
                         action: "addBusiness",
                         payload: payload
@@ -114,8 +206,8 @@
                 });
 
                 const result = await response.json();
-                
-                if(result.success) {
+
+                if (result.success) {
                     Swal.fire({
                         icon: 'success',
                         title: 'สำเร็จ',
@@ -124,50 +216,239 @@
                         timer: 1500,
                         showConfirmButton: false
                     });
+
                     document.getElementById('addBusinessForm').reset();
                     document.getElementById('bizClass').value = '6/2';
-                    loadSummary(); 
+
+                    loadSummary();
+
                 } else {
                     Swal.fire({
                         icon: 'error',
                         title: 'เกิดข้อผิดพลาด',
-                        text: result.message,
+                        text: result.message || 'ไม่สามารถเพิ่มธุรกิจได้',
                         confirmButtonColor: '#111827'
                     });
                 }
+
             } catch (error) {
+                console.error(error);
+
                 Swal.fire({
                     icon: 'error',
                     title: 'ข้อผิดพลาดเครือข่าย',
                     text: 'เกิดข้อผิดพลาดในการเชื่อมต่อ',
                     confirmButtonColor: '#111827'
                 });
+
             } finally {
                 submitBtn.innerHTML = "เพิ่มธุรกิจ";
                 submitBtn.disabled = false;
             }
         });
 
-        async function loadSummary() {
-            const tbody = document.getElementById('summaryTableBody');
-            tbody.innerHTML = `<tr><td colspan="5" class="py-8 text-center text-gray-500">กำลังดึงข้อมูลล่าสุด...</td></tr>`;
+        // ==============================
+        // โหลดสถานะเปิด/ปิดระบบลงทุน
+        // ==============================
+        async function loadInvestmentStatus() {
+            const statusText = document.getElementById('investmentStatusText');
+            const statusBadge = document.getElementById('statusBadge');
+            const toggleBtn = document.getElementById('toggleInvestmentBtn');
+
+            statusText.innerText = "กำลังตรวจสอบสถานะระบบ...";
+            statusBadge.innerText = "กำลังโหลด";
+            statusBadge.className = "px-4 py-2 rounded-full text-sm font-medium bg-gray-100 text-gray-600";
+            toggleBtn.innerText = "กำลังโหลด...";
+            toggleBtn.disabled = true;
 
             try {
                 const response = await fetch(API_URL, {
                     method: "POST",
-                    headers: { "Content-Type": "text/plain;charset=utf-8" },
-                    body: JSON.stringify({ action: "getSummary" })
+                    headers: {
+                        "Content-Type": "text/plain;charset=utf-8"
+                    },
+                    body: JSON.stringify({
+                        action: "getInvestmentStatus"
+                    })
                 });
 
                 const result = await response.json();
-                
-                if(result.success) {
+
+                if (result.success) {
+                    investmentOpen = result.open === true;
+                    renderInvestmentStatus();
+
+                } else {
+                    statusText.innerText = result.message || "ไม่สามารถตรวจสอบสถานะระบบได้";
+                    statusBadge.innerText = "ผิดพลาด";
+                    statusBadge.className = "px-4 py-2 rounded-full text-sm font-medium bg-red-100 text-red-700";
+                    toggleBtn.innerText = "ลองใหม่";
+                    toggleBtn.disabled = false;
+                }
+
+            } catch (error) {
+                console.error(error);
+
+                statusText.innerText = "เกิดข้อผิดพลาดในการเชื่อมต่อ";
+                statusBadge.innerText = "เชื่อมต่อไม่ได้";
+                statusBadge.className = "px-4 py-2 rounded-full text-sm font-medium bg-red-100 text-red-700";
+                toggleBtn.innerText = "ลองใหม่";
+                toggleBtn.disabled = false;
+            }
+        }
+
+        function renderInvestmentStatus() {
+            const statusText = document.getElementById('investmentStatusText');
+            const statusBadge = document.getElementById('statusBadge');
+            const toggleBtn = document.getElementById('toggleInvestmentBtn');
+
+            toggleBtn.disabled = false;
+
+            if (investmentOpen) {
+                statusText.innerText = "ขณะนี้นักเรียนสามารถกดลงทุนได้ตามปกติ";
+                statusBadge.innerText = "เปิดระบบ";
+                statusBadge.className = "px-4 py-2 rounded-full text-sm font-medium bg-green-100 text-green-700";
+                toggleBtn.innerText = "ปิดระบบการลงทุน";
+                toggleBtn.className = "px-5 py-3 rounded-xl bg-red-600 text-white hover:bg-red-700 transition font-medium disabled:opacity-60 disabled:cursor-not-allowed";
+            } else {
+                statusText.innerText = "ขณะนี้ระบบปิดอยู่ นักเรียนจะไม่สามารถลงทุนเพิ่มเติมได้";
+                statusBadge.innerText = "ปิดระบบ";
+                statusBadge.className = "px-4 py-2 rounded-full text-sm font-medium bg-red-100 text-red-700";
+                toggleBtn.innerText = "เปิดระบบการลงทุน";
+                toggleBtn.className = "px-5 py-3 rounded-xl bg-green-600 text-white hover:bg-green-700 transition font-medium disabled:opacity-60 disabled:cursor-not-allowed";
+            }
+        }
+
+        // ==============================
+        // กดเปิด/ปิดระบบลงทุน
+        // ==============================
+        async function toggleInvestmentStatus() {
+            const newStatus = !investmentOpen;
+
+            const confirmResult = await Swal.fire({
+                title: newStatus ? "เปิดระบบการลงทุน?" : "ปิดระบบการลงทุน?",
+                text: newStatus
+                    ? "เมื่อนักเรียนเข้าสู่ระบบ จะสามารถกดลงทุนได้"
+                    : "เมื่อนักเรียนกดลงทุน ระบบจะไม่อนุญาตให้บันทึกการลงทุนใหม่",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonColor: newStatus ? "#16a34a" : "#dc2626",
+                cancelButtonColor: "#6b7280",
+                confirmButtonText: newStatus ? "เปิดระบบ" : "ปิดระบบ",
+                cancelButtonText: "ยกเลิก"
+            });
+
+            if (!confirmResult.isConfirmed) {
+                return;
+            }
+
+            const toggleBtn = document.getElementById('toggleInvestmentBtn');
+            toggleBtn.disabled = true;
+            toggleBtn.innerText = "กำลังบันทึก...";
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "text/plain;charset=utf-8"
+                    },
+                    body: JSON.stringify({
+                        action: "setInvestmentStatus",
+                        payload: {
+                            open: newStatus
+                        }
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    investmentOpen = result.open === true;
+                    renderInvestmentStatus();
+
+                    Swal.fire({
+                        icon: "success",
+                        title: "สำเร็จ",
+                        text: result.message,
+                        confirmButtonColor: "#111827",
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "เกิดข้อผิดพลาด",
+                        text: result.message || "ไม่สามารถเปลี่ยนสถานะระบบได้",
+                        confirmButtonColor: "#111827"
+                    });
+
+                    renderInvestmentStatus();
+                }
+
+            } catch (error) {
+                console.error(error);
+
+                Swal.fire({
+                    icon: "error",
+                    title: "ข้อผิดพลาดเครือข่าย",
+                    text: "ไม่สามารถเชื่อมต่อกับระบบได้",
+                    confirmButtonColor: "#111827"
+                });
+
+                renderInvestmentStatus();
+            }
+        }
+
+        // ==============================
+        // โหลด Summary
+        // ==============================
+        async function loadSummary() {
+            const tbody = document.getElementById('summaryTableBody');
+
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="5" class="py-8 text-center text-gray-500">
+                        กำลังดึงข้อมูลล่าสุด...
+                    </td>
+                </tr>
+            `;
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "text/plain;charset=utf-8"
+                    },
+                    body: JSON.stringify({
+                        action: "getSummary"
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
                     renderTable(result.data);
                 } else {
-                    tbody.innerHTML = `<tr><td colspan="5" class="py-8 text-center text-red-500">ดึงข้อมูลล้มเหลว</td></tr>`;
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="5" class="py-8 text-center text-red-500">
+                                ${result.message || 'ดึงข้อมูลล้มเหลว'}
+                            </td>
+                        </tr>
+                    `;
                 }
+
             } catch (error) {
-                tbody.innerHTML = `<tr><td colspan="5" class="py-8 text-center text-red-500">เกิดข้อผิดพลาดในการเชื่อมต่อเครือข่าย</td></tr>`;
+                console.error(error);
+
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="py-8 text-center text-red-500">
+                            เกิดข้อผิดพลาดในการเชื่อมต่อเครือข่าย
+                        </td>
+                    </tr>
+                `;
             }
         }
 
@@ -175,31 +456,70 @@
             const tbody = document.getElementById('summaryTableBody');
             tbody.innerHTML = "";
 
-            if(data.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="py-8 text-center text-gray-500">ยังไม่มีข้อมูลธุรกิจ</td></tr>`;
+            if (!data || data.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="py-8 text-center text-gray-500">
+                            ยังไม่มีข้อมูลธุรกิจ
+                        </td>
+                    </tr>
+                `;
                 return;
             }
 
             data.forEach((item, index) => {
                 let rankStyle = "text-gray-600";
-                if(index === 0) rankStyle = "font-bold text-yellow-500 text-lg";
-                else if(index === 1) rankStyle = "font-bold text-gray-400 text-lg";
-                else if(index === 2) rankStyle = "font-bold text-amber-700 text-lg";
+
+                if (index === 0) {
+                    rankStyle = "font-bold text-yellow-500 text-lg";
+                } else if (index === 1) {
+                    rankStyle = "font-bold text-gray-400 text-lg";
+                } else if (index === 2) {
+                    rankStyle = "font-bold text-amber-700 text-lg";
+                }
+
+                const totalAmount = Number(item.totalAmount || 0);
+                const investorCount = Number(item.investorCount || 0);
 
                 const row = `
                     <tr class="border-b border-gray-100 hover:bg-gray-50 transition">
-                        <td class="py-4 px-4 ${rankStyle}">${index + 1}</td>
-                        <td class="py-4 px-4 font-medium text-gray-900">${item.name}</td>
-                        <td class="py-4 px-4 text-gray-600">ม.${item.class}</td>
-                        <td class="py-4 px-4 text-center text-gray-600">${item.investorCount} คน</td>
-                        <td class="py-4 px-4 text-right font-semibold text-gray-900">฿${item.totalAmount.toLocaleString()}</td>
+                        <td class="py-4 px-4 ${rankStyle}">
+                            ${index + 1}
+                        </td>
+
+                        <td class="py-4 px-4 font-medium text-gray-900">
+                            ${item.name}
+                        </td>
+
+                        <td class="py-4 px-4 text-gray-600">
+                            ม.${item.class}
+                        </td>
+
+                        <td class="py-4 px-4 text-center text-gray-600">
+                            ${investorCount} คน
+                        </td>
+
+                        <td class="py-4 px-4 text-right font-semibold text-gray-900">
+                            ฿${totalAmount.toLocaleString()}
+                        </td>
                     </tr>
                 `;
+
                 tbody.innerHTML += row;
             });
         }
 
-        loadSummary();
+        // ==============================
+        // รีเฟรชทั้งหมด
+        // ==============================
+        function refreshAll() {
+            loadInvestmentStatus();
+            loadSummary();
+        }
+
+        // เริ่มโหลดข้อมูล
+        refreshAll();
     </script>
+
 </body>
 </html>
