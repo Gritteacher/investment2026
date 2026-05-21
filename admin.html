@@ -6,6 +6,7 @@
     <title>VentureClass | Admin Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         body { font-family: 'Prompt', sans-serif; }
     </style>
@@ -14,7 +15,6 @@
 
     <div class="max-w-6xl mx-auto space-y-8">
         
-        <!-- Header -->
         <header class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex justify-between items-center">
             <div>
                 <h1 class="text-3xl font-semibold text-gray-900">ระบบจัดการผู้สอน (Admin)</h1>
@@ -28,7 +28,6 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             
-            <!-- ส่วนเพิ่มธุรกิจ (ซ้าย) -->
             <div class="lg:col-span-1 bg-white p-6 rounded-2xl shadow-sm border border-gray-100 h-fit">
                 <h2 class="text-xl font-medium text-gray-800 mb-4">เพิ่มธุรกิจใหม่</h2>
                 <form id="addBusinessForm" class="space-y-4">
@@ -63,7 +62,6 @@
                 </form>
             </div>
 
-            <!-- ส่วนสรุปผลการลงทุน (ขวา) -->
             <div class="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
                 <h2 class="text-xl font-medium text-gray-800 mb-4">สรุปยอดเงินระดมทุน (Leaderboard)</h2>
                 <div class="overflow-x-auto">
@@ -90,10 +88,8 @@
     </div>
 
     <script>
-        // ⚠️ นำ URL ของ Web App มาวางที่นี่
         const API_URL = "https://script.google.com/macros/s/AKfycby8G6xt7_oukBQlGTaQTwt6Lpnc0gNa4zT3ZgpC0RKmFpj8V59Io0G95FAEPDMLrjQf/exec";
 
-        // 1. ฟังก์ชันเพิ่มธุรกิจ
         document.getElementById('addBusinessForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
@@ -120,21 +116,38 @@
                 const result = await response.json();
                 
                 if(result.success) {
-                    alert("เพิ่มธุรกิจเรียบร้อยแล้ว");
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'สำเร็จ',
+                        text: 'เพิ่มธุรกิจเรียบร้อยแล้ว',
+                        confirmButtonColor: '#111827',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
                     document.getElementById('addBusinessForm').reset();
-                    // เซ็ตค่ากลับไปที่ 6/2 หลังเคลียร์ฟอร์ม
                     document.getElementById('bizClass').value = '6/2';
-                    loadSummary(); // โหลดตารางใหม่ทันที
+                    loadSummary(); 
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'เกิดข้อผิดพลาด',
+                        text: result.message,
+                        confirmButtonColor: '#111827'
+                    });
                 }
             } catch (error) {
-                alert("เกิดข้อผิดพลาดในการเชื่อมต่อ");
+                Swal.fire({
+                    icon: 'error',
+                    title: 'ข้อผิดพลาดเครือข่าย',
+                    text: 'เกิดข้อผิดพลาดในการเชื่อมต่อ',
+                    confirmButtonColor: '#111827'
+                });
             } finally {
                 submitBtn.innerHTML = "เพิ่มธุรกิจ";
                 submitBtn.disabled = false;
             }
         });
 
-        // 2. ฟังก์ชันโหลดข้อมูลสรุป
         async function loadSummary() {
             const tbody = document.getElementById('summaryTableBody');
             tbody.innerHTML = `<tr><td colspan="5" class="py-8 text-center text-gray-500">กำลังดึงข้อมูลล่าสุด...</td></tr>`;
@@ -158,7 +171,6 @@
             }
         }
 
-        // 3. ฟังก์ชันสร้างตาราง
         function renderTable(data) {
             const tbody = document.getElementById('summaryTableBody');
             tbody.innerHTML = "";
@@ -169,7 +181,6 @@
             }
 
             data.forEach((item, index) => {
-                // จัดสไตล์ให้ 3 อันดับแรกดูเด่นขึ้น
                 let rankStyle = "text-gray-600";
                 if(index === 0) rankStyle = "font-bold text-yellow-500 text-lg";
                 else if(index === 1) rankStyle = "font-bold text-gray-400 text-lg";
@@ -188,7 +199,6 @@
             });
         }
 
-        // โหลดตารางทันทีเมื่อเปิดหน้า Admin
         loadSummary();
     </script>
 </body>
