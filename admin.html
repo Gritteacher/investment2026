@@ -18,13 +18,13 @@
     </style>
 </head>
 
-<body class="bg-gray-50 text-gray-800 p-4 md:p-8 min-h-screen">
+<body class="bg-gray-50 text-gray-800 min-h-screen">
 
-    <div class="max-w-7xl mx-auto space-y-8">
+    <div class="max-w-7xl mx-auto space-y-8 p-4 md:p-8">
 
-        <header class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <header class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
-                <h1 class="text-3xl font-semibold text-gray-900">
+                <h1 class="text-3xl md:text-4xl font-semibold text-gray-900">
                     ควบคุมการจำลองการลงทุน
                 </h1>
                 <p class="text-gray-500 mt-1">
@@ -35,22 +35,22 @@
             <div class="flex flex-wrap gap-2">
                 <button
                     onclick="refreshAll()"
-                    class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition text-sm">
+                    class="px-4 py-2 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition text-sm">
                     รีเฟรชข้อมูล
                 </button>
 
                 <button
                     onclick="logoutAdmin()"
-                    class="px-4 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition text-sm">
+                    class="px-4 py-2 bg-red-50 text-red-600 rounded-xl hover:bg-red-100 transition text-sm">
                     ออกจาก Admin
                 </button>
             </div>
         </header>
 
-        <section class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+        <section class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
             <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <div>
-                    <h2 class="text-xl font-medium text-gray-800 mb-1">
+                    <h2 class="text-xl font-semibold text-gray-800 mb-1">
                         สถานะระบบการลงทุน
                     </h2>
                     <p id="investmentStatusText" class="text-gray-500">
@@ -58,15 +58,15 @@
                     </p>
                 </div>
 
-                <div class="flex items-center gap-3">
-                    <span id="statusBadge" class="px-4 py-2 rounded-full text-sm font-medium bg-gray-100 text-gray-600">
+                <div class="flex flex-col sm:flex-row sm:items-center gap-3">
+                    <span id="statusBadge" class="px-4 py-2 rounded-full text-sm font-medium bg-gray-100 text-gray-600 text-center">
                         กำลังโหลด
                     </span>
 
                     <button
                         id="toggleInvestmentBtn"
                         onclick="toggleInvestmentStatus()"
-                        class="px-5 py-3 rounded-xl bg-gray-900 text-white hover:bg-gray-800 transition font-medium disabled:opacity-60 disabled:cursor-not-allowed">
+                        class="px-5 py-3 rounded-2xl bg-gray-900 text-white hover:bg-gray-800 transition font-medium disabled:opacity-60 disabled:cursor-not-allowed">
                         กำลังโหลด...
                     </button>
                 </div>
@@ -75,8 +75,8 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-            <div class="lg:col-span-1 bg-white p-6 rounded-2xl shadow-sm border border-gray-100 h-fit">
-                <h2 class="text-xl font-medium text-gray-800 mb-4">
+            <div class="lg:col-span-1 bg-white p-6 rounded-3xl shadow-sm border border-gray-100 h-fit">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">
                     เพิ่มธุรกิจใหม่
                 </h2>
 
@@ -90,7 +90,7 @@
                             type="text"
                             id="bizName"
                             required
-                            class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-900 transition">
+                            class="w-full px-4 py-3 rounded-2xl bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-900 transition">
                     </div>
 
                     <div>
@@ -102,7 +102,7 @@
                             id="bizDesc"
                             rows="3"
                             required
-                            class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-900 transition"></textarea>
+                            class="w-full px-4 py-3 rounded-2xl bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-900 transition"></textarea>
                     </div>
 
                     <div>
@@ -113,7 +113,7 @@
                         <select
                             id="bizClass"
                             required
-                            class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-900 transition">
+                            class="w-full px-4 py-3 rounded-2xl bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-900 transition">
                             <option value="6/1">ม.6/1</option>
                             <option value="6/2" selected>ม.6/2</option>
                             <option value="6/3">ม.6/3</option>
@@ -132,16 +132,16 @@
                     <button
                         type="submit"
                         id="submitBtn"
-                        class="w-full py-3 bg-gray-900 text-white font-medium rounded-xl hover:bg-gray-800 transition">
+                        class="w-full py-3 bg-gray-900 text-white font-medium rounded-2xl hover:bg-gray-800 transition">
                         เพิ่มธุรกิจ
                     </button>
                 </form>
             </div>
 
-            <div class="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+            <div class="lg:col-span-2 bg-white p-5 md:p-6 rounded-3xl shadow-sm border border-gray-100">
                 <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-5">
                     <div>
-                        <h2 class="text-xl font-medium text-gray-800">
+                        <h2 class="text-xl font-semibold text-gray-800">
                             สรุปยอดเงินระดมทุนรายห้อง
                         </h2>
                         <p class="text-sm text-gray-500 mt-1">
@@ -157,7 +157,7 @@
                         <select
                             id="filterClass"
                             onchange="loadSummaryByClass()"
-                            class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-900 transition">
+                            class="w-full px-4 py-3 rounded-2xl bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-900 transition">
                             <option value="6/1">ม.6/1</option>
                             <option value="6/2" selected>ม.6/2</option>
                             <option value="6/3">ม.6/3</option>
@@ -175,21 +175,21 @@
                 </div>
 
                 <div id="classSummaryCards" class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5">
-                    <div class="bg-gray-50 rounded-2xl p-4 border border-gray-100">
+                    <div class="bg-gray-50 rounded-3xl p-4 border border-gray-100">
                         <p class="text-sm text-gray-500">จำนวนธุรกิจ</p>
                         <p class="text-2xl font-semibold text-gray-900">
                             <span id="totalBusinessCount">0</span>
                         </p>
                     </div>
 
-                    <div class="bg-gray-50 rounded-2xl p-4 border border-gray-100">
+                    <div class="bg-gray-50 rounded-3xl p-4 border border-gray-100">
                         <p class="text-sm text-gray-500">จำนวนครั้งที่ลงทุน</p>
                         <p class="text-2xl font-semibold text-gray-900">
                             <span id="totalInvestmentCount">0</span>
                         </p>
                     </div>
 
-                    <div class="bg-gray-50 rounded-2xl p-4 border border-gray-100">
+                    <div class="bg-gray-50 rounded-3xl p-4 border border-gray-100">
                         <p class="text-sm text-gray-500">ยอดรวมทั้งหมด</p>
                         <p class="text-2xl font-semibold text-gray-900">
                             ฿<span id="totalClassAmount">0</span>
@@ -199,17 +199,17 @@
 
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse">
-                        <thead>
+                        <thead class="hidden md:table-header-group">
                             <tr class="bg-gray-50 text-gray-500 text-sm border-b border-gray-200">
-                                <th class="py-3 px-4 font-medium rounded-tl-lg">อันดับ</th>
+                                <th class="py-3 px-4 font-medium rounded-tl-xl">อันดับ</th>
                                 <th class="py-3 px-4 font-medium">ชื่อธุรกิจ</th>
                                 <th class="py-3 px-4 font-medium text-center">จำนวนครั้งที่ลงทุน</th>
                                 <th class="py-3 px-4 font-medium text-right">ยอดเงินรวม</th>
-                                <th class="py-3 px-4 font-medium text-center rounded-tr-lg">รายละเอียด</th>
+                                <th class="py-3 px-4 font-medium text-center rounded-tr-xl">รายละเอียด</th>
                             </tr>
                         </thead>
 
-                        <tbody id="summaryTableBody">
+                        <tbody id="summaryTableBody" class="block md:table-row-group space-y-4 md:space-y-0">
                             <tr>
                                 <td colspan="5" class="py-8 text-center text-gray-500">
                                     กำลังโหลดข้อมูล...
@@ -222,10 +222,10 @@
 
         </div>
 
-        <section class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+        <section class="bg-white p-5 md:p-6 rounded-3xl shadow-sm border border-gray-100">
             <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-5">
                 <div>
-                    <h2 class="text-xl font-medium text-gray-800">
+                    <h2 class="text-xl font-semibold text-gray-800">
                         รายละเอียดนักลงทุนของธุรกิจ
                     </h2>
                     <p id="selectedBusinessText" class="text-sm text-gray-500 mt-1">
@@ -233,7 +233,7 @@
                     </p>
                 </div>
 
-                <div class="text-left md:text-right">
+                <div class="text-left md:text-right bg-gray-50 rounded-2xl px-4 py-3 border border-gray-100">
                     <p class="text-sm text-gray-500">ยอดรวมธุรกิจที่เลือก</p>
                     <p class="text-2xl font-semibold text-gray-900">
                         ฿<span id="selectedBusinessAmount">0</span>
@@ -243,19 +243,19 @@
 
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse">
-                    <thead>
+                    <thead class="hidden md:table-header-group">
                         <tr class="bg-gray-50 text-gray-500 text-sm border-b border-gray-200">
-                            <th class="py-3 px-4 font-medium rounded-tl-lg">ลำดับ</th>
+                            <th class="py-3 px-4 font-medium rounded-tl-xl">ลำดับ</th>
                             <th class="py-3 px-4 font-medium">รหัสนักเรียน</th>
                             <th class="py-3 px-4 font-medium">ชื่อ - นามสกุล</th>
                             <th class="py-3 px-4 font-medium text-center">ห้อง</th>
                             <th class="py-3 px-4 font-medium text-center">เลขที่</th>
                             <th class="py-3 px-4 font-medium text-right">ยอดลงทุน</th>
-                            <th class="py-3 px-4 font-medium text-right rounded-tr-lg">เวลา</th>
+                            <th class="py-3 px-4 font-medium text-right rounded-tr-xl">เวลา</th>
                         </tr>
                     </thead>
 
-                    <tbody id="investorTableBody">
+                    <tbody id="investorTableBody" class="block md:table-row-group space-y-4 md:space-y-0">
                         <tr>
                             <td colspan="7" class="py-8 text-center text-gray-400">
                                 ยังไม่ได้เลือกธุรกิจ
@@ -425,7 +425,7 @@
 
             statusText.innerText = "กำลังตรวจสอบสถานะระบบ...";
             statusBadge.innerText = "กำลังโหลด";
-            statusBadge.className = "px-4 py-2 rounded-full text-sm font-medium bg-gray-100 text-gray-600";
+            statusBadge.className = "px-4 py-2 rounded-full text-sm font-medium bg-gray-100 text-gray-600 text-center";
             toggleBtn.innerText = "กำลังโหลด...";
             toggleBtn.disabled = true;
 
@@ -448,7 +448,7 @@
                 } else {
                     statusText.innerText = result.message || "ไม่สามารถตรวจสอบสถานะระบบได้";
                     statusBadge.innerText = "ผิดพลาด";
-                    statusBadge.className = "px-4 py-2 rounded-full text-sm font-medium bg-red-100 text-red-700";
+                    statusBadge.className = "px-4 py-2 rounded-full text-sm font-medium bg-red-100 text-red-700 text-center";
                     toggleBtn.innerText = "ลองใหม่";
                     toggleBtn.disabled = false;
                 }
@@ -456,7 +456,7 @@
             } catch (error) {
                 statusText.innerText = "เกิดข้อผิดพลาดในการเชื่อมต่อ";
                 statusBadge.innerText = "เชื่อมต่อไม่ได้";
-                statusBadge.className = "px-4 py-2 rounded-full text-sm font-medium bg-red-100 text-red-700";
+                statusBadge.className = "px-4 py-2 rounded-full text-sm font-medium bg-red-100 text-red-700 text-center";
                 toggleBtn.innerText = "ลองใหม่";
                 toggleBtn.disabled = false;
             }
@@ -472,15 +472,15 @@
             if (investmentOpen) {
                 statusText.innerText = "ขณะนี้นักเรียนสามารถกดลงทุนได้ตามปกติ";
                 statusBadge.innerText = "เปิดระบบ";
-                statusBadge.className = "px-4 py-2 rounded-full text-sm font-medium bg-green-100 text-green-700";
+                statusBadge.className = "px-4 py-2 rounded-full text-sm font-medium bg-green-100 text-green-700 text-center";
                 toggleBtn.innerText = "ปิดระบบการลงทุน";
-                toggleBtn.className = "px-5 py-3 rounded-xl bg-red-600 text-white hover:bg-red-700 transition font-medium disabled:opacity-60 disabled:cursor-not-allowed";
+                toggleBtn.className = "px-5 py-3 rounded-2xl bg-red-600 text-white hover:bg-red-700 transition font-medium disabled:opacity-60 disabled:cursor-not-allowed";
             } else {
                 statusText.innerText = "ขณะนี้ระบบปิดอยู่ นักเรียนจะไม่สามารถลงทุนเพิ่มเติมได้";
                 statusBadge.innerText = "ปิดระบบ";
-                statusBadge.className = "px-4 py-2 rounded-full text-sm font-medium bg-red-100 text-red-700";
+                statusBadge.className = "px-4 py-2 rounded-full text-sm font-medium bg-red-100 text-red-700 text-center";
                 toggleBtn.innerText = "เปิดระบบการลงทุน";
-                toggleBtn.className = "px-5 py-3 rounded-xl bg-green-600 text-white hover:bg-green-700 transition font-medium disabled:opacity-60 disabled:cursor-not-allowed";
+                toggleBtn.className = "px-5 py-3 rounded-2xl bg-green-600 text-white hover:bg-green-700 transition font-medium disabled:opacity-60 disabled:cursor-not-allowed";
             }
         }
 
@@ -649,29 +649,38 @@
                 const investorCount = Number(item.investorCount || 0);
 
                 tbody.innerHTML += `
-                    <tr class="border-b border-gray-100 hover:bg-gray-50 transition">
-                        <td class="py-4 px-4 ${rankStyle}">
+                    <tr class="block md:table-row mb-4 md:mb-0 bg-white md:bg-transparent border border-gray-100 md:border-0 rounded-2xl md:rounded-none shadow-sm md:shadow-none overflow-hidden hover:bg-gray-50 transition">
+                        
+                        <td class="block md:table-cell py-3 md:py-4 px-4 border-b md:border-b border-gray-100 ${rankStyle}">
+                            <span class="block md:hidden text-xs text-gray-400 mb-1">อันดับ</span>
                             ${index + 1}
                         </td>
 
-                        <td class="py-4 px-4">
+                        <td class="block md:table-cell py-3 md:py-4 px-4 border-b md:border-b border-gray-100">
+                            <span class="block md:hidden text-xs text-gray-400 mb-1">ชื่อธุรกิจ</span>
                             <div class="font-medium text-gray-900">${escapeHtml(item.name)}</div>
                             <div class="text-xs text-gray-400 mt-1">${escapeHtml(item.description || '')}</div>
                         </td>
 
-                        <td class="py-4 px-4 text-center text-gray-600">
-                            ${investorCount} ครั้ง
+                        <td class="block md:table-cell py-3 md:py-4 px-4 md:text-center border-b md:border-b border-gray-100">
+                            <span class="block md:hidden text-xs text-gray-400 mb-1">จำนวนครั้งที่ลงทุน</span>
+                            <span class="inline-flex px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-sm">
+                                ${investorCount} ครั้ง
+                            </span>
                         </td>
 
-                        <td class="py-4 px-4 text-right font-semibold text-gray-900">
-                            ฿${totalAmount.toLocaleString()}
+                        <td class="block md:table-cell py-3 md:py-4 px-4 md:text-right border-b md:border-b border-gray-100">
+                            <span class="block md:hidden text-xs text-gray-400 mb-1">ยอดเงินรวม</span>
+                            <span class="font-semibold text-emerald-600 text-lg md:text-base">
+                                ฿${totalAmount.toLocaleString()}
+                            </span>
                         </td>
 
-                        <td class="py-4 px-4 text-center">
+                        <td class="block md:table-cell py-3 md:py-4 px-4 md:text-center">
                             <button
                                 onclick="loadBusinessInvestors('${item.id}')"
-                                class="px-3 py-2 text-sm rounded-lg bg-gray-900 text-white hover:bg-gray-800 transition">
-                                ดูรายชื่อ
+                                class="w-full md:w-auto px-4 py-2.5 text-sm rounded-xl bg-gray-900 text-white hover:bg-gray-800 transition">
+                                ดูรายชื่อผู้ลงทุน
                             </button>
                         </td>
                     </tr>
@@ -759,32 +768,44 @@
 
             investors.forEach((item, index) => {
                 tbody.innerHTML += `
-                    <tr class="border-b border-gray-100 hover:bg-gray-50 transition text-sm">
-                        <td class="py-4 px-4 text-gray-500">
+                    <tr class="block md:table-row mb-4 md:mb-0 bg-white md:bg-transparent border border-gray-100 md:border-0 rounded-2xl md:rounded-none shadow-sm md:shadow-none overflow-hidden hover:bg-gray-50 transition text-sm">
+                        
+                        <td class="block md:table-cell py-3 md:py-4 px-4 border-b md:border-b border-gray-100 text-gray-500">
+                            <span class="block md:hidden text-xs text-gray-400 mb-1">ลำดับ</span>
                             ${index + 1}
                         </td>
 
-                        <td class="py-4 px-4 text-gray-600">
+                        <td class="block md:table-cell py-3 md:py-4 px-4 border-b md:border-b border-gray-100 text-gray-600">
+                            <span class="block md:hidden text-xs text-gray-400 mb-1">รหัสนักเรียน</span>
                             ${escapeHtml(item.studentId)}
                         </td>
 
-                        <td class="py-4 px-4 font-medium text-gray-900">
-                            ${escapeHtml(item.name)} ${escapeHtml(item.surname)}
+                        <td class="block md:table-cell py-3 md:py-4 px-4 border-b md:border-b border-gray-100">
+                            <span class="block md:hidden text-xs text-gray-400 mb-1">ชื่อ - นามสกุล</span>
+                            <span class="font-medium text-gray-900">
+                                ${escapeHtml(item.name)} ${escapeHtml(item.surname)}
+                            </span>
                         </td>
 
-                        <td class="py-4 px-4 text-center text-gray-600">
+                        <td class="block md:table-cell py-3 md:py-4 px-4 md:text-center border-b md:border-b border-gray-100 text-gray-600">
+                            <span class="block md:hidden text-xs text-gray-400 mb-1">ห้อง</span>
                             ม.${escapeHtml(item.class)}
                         </td>
 
-                        <td class="py-4 px-4 text-center text-gray-600">
+                        <td class="block md:table-cell py-3 md:py-4 px-4 md:text-center border-b md:border-b border-gray-100 text-gray-600">
+                            <span class="block md:hidden text-xs text-gray-400 mb-1">เลขที่</span>
                             ${escapeHtml(item.number)}
                         </td>
 
-                        <td class="py-4 px-4 text-right font-semibold text-emerald-600">
-                            ฿${Number(item.amount || 0).toLocaleString()}
+                        <td class="block md:table-cell py-3 md:py-4 px-4 md:text-right border-b md:border-b border-gray-100">
+                            <span class="block md:hidden text-xs text-gray-400 mb-1">ยอดลงทุน</span>
+                            <span class="font-semibold text-emerald-600 text-lg md:text-base">
+                                ฿${Number(item.amount || 0).toLocaleString()}
+                            </span>
                         </td>
 
-                        <td class="py-4 px-4 text-right text-gray-500">
+                        <td class="block md:table-cell py-3 md:py-4 px-4 md:text-right text-gray-500">
+                            <span class="block md:hidden text-xs text-gray-400 mb-1">เวลา</span>
                             ${escapeHtml(item.timestamp)}
                         </td>
                     </tr>
