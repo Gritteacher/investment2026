@@ -6,16 +6,11 @@
     <title>VentureClass | กระดานลงทุน</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
-
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
-        body {
-            font-family: 'Prompt', sans-serif;
-        }
-
+        body { font-family: 'Prompt', sans-serif; }
         input[type=number]::-webkit-inner-spin-button,
         input[type=number]::-webkit-outer-spin-button {
             -webkit-appearance: none;
@@ -30,10 +25,8 @@
 
         <header class="flex flex-col md:flex-row justify-between items-start md:items-end bg-white p-6 rounded-3xl shadow-sm border border-gray-100 gap-4">
             <div>
-                <h1 class="text-3xl md:text-4xl font-semibold text-gray-900 mb-2">
-                    กระดานลงทุน
-                </h1>
-                <p class="text-gray-500 flex items-center gap-2">
+                <h1 class="text-3xl md:text-4xl font-semibold text-gray-900 mb-2">กระดานลงทุน</h1>
+                <p class="text-gray-500">
                     <span id="studentInfo">กำลังโหลดข้อมูลนักเรียน...</span>
                 </p>
             </div>
@@ -49,12 +42,8 @@
         <section>
             <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-6">
                 <div>
-                    <h2 class="text-xl font-semibold text-gray-800">
-                        ธุรกิจที่เปิดระดมทุน
-                    </h2>
-                    <p class="text-sm text-gray-500 mt-1">
-                        เลือกธุรกิจที่สนใจ แล้วระบุจำนวนเงินที่ต้องการลงทุน
-                    </p>
+                    <h2 class="text-xl font-semibold text-gray-800">ธุรกิจที่เปิดระดมทุน</h2>
+                    <p class="text-sm text-gray-500 mt-1">เลือกธุรกิจที่สนใจ แล้วระบุจำนวนเงินที่ต้องการลงทุน</p>
                 </div>
 
                 <button onclick="logout()" class="text-sm text-red-500 hover:text-red-700 transition self-start md:self-auto">
@@ -71,35 +60,61 @@
         </section>
 
         <section class="bg-white p-5 md:p-6 rounded-3xl shadow-sm border border-gray-100">
-            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-5">
+            <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-5">
                 <div>
-                    <h2 class="text-xl font-semibold text-gray-800">
-                        ประวัติการลงทุนของคุณ
-                    </h2>
+                    <h2 class="text-xl font-semibold text-gray-800">สรุปและประวัติการลงทุน</h2>
                     <p class="text-sm text-gray-500 mt-1">
-                        รายการลงทุนล่าสุดจะแสดงอยู่ด้านบน
+                        เลือกรายการจาก Dropdown แล้วกดดูรายละเอียด
+                    </p>
+                </div>
+
+                <button onclick="loadInvestmentHistory()" class="px-4 py-2 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition text-sm">
+                    รีเฟรชประวัติ
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                <div class="bg-gray-50 rounded-3xl p-4 border border-gray-100">
+                    <p class="text-sm text-gray-500">จำนวนครั้งที่ลงทุน</p>
+                    <p class="text-2xl font-semibold text-gray-900">
+                        <span id="historyCount">0</span> ครั้ง
+                    </p>
+                </div>
+
+                <div class="bg-gray-50 rounded-3xl p-4 border border-gray-100">
+                    <p class="text-sm text-gray-500">ยอดลงทุนรวม</p>
+                    <p class="text-2xl font-semibold text-gray-900">
+                        ฿<span id="historyTotalAmount">0</span>
+                    </p>
+                </div>
+
+                <div class="bg-gray-50 rounded-3xl p-4 border border-gray-100">
+                    <p class="text-sm text-gray-500">งบตั้งต้น</p>
+                    <p class="text-2xl font-semibold text-gray-900">
+                        ฿10,000,000
                     </p>
                 </div>
             </div>
 
-            <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse">
-                    <thead class="hidden md:table-header-group">
-                        <tr class="bg-gray-50 text-gray-500 text-sm border-b border-gray-200">
-                            <th class="py-3 px-4 font-medium rounded-tl-xl">วัน-เวลาที่ลงทุน</th>
-                            <th class="py-3 px-4 font-medium">ชื่อธุรกิจ</th>
-                            <th class="py-3 px-4 font-medium text-right rounded-tr-xl">ยอดเงินลงทุน</th>
-                        </tr>
-                    </thead>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end mb-6">
+                <div class="md:col-span-2">
+                    <label class="block text-sm text-gray-600 mb-2">เลือกรายการประวัติการลงทุน</label>
+                    <select
+                        id="historySelect"
+                        class="w-full px-4 py-3.5 rounded-2xl bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-900 transition">
+                        <option value="">กำลังโหลดข้อมูล...</option>
+                    </select>
+                </div>
 
-                    <tbody id="historyTableBody" class="block md:table-row-group space-y-4 md:space-y-0">
-                        <tr>
-                            <td colspan="3" class="py-8 text-center text-gray-400">
-                                กำลังโหลดประวัติการลงทุน...
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                <button
+                    onclick="showSelectedInvestmentDetail()"
+                    class="w-full py-3.5 bg-gray-900 text-white font-medium rounded-2xl hover:bg-gray-800 transition">
+                    ดูรายละเอียด
+                </button>
+            </div>
+
+            <div id="historyDetailBox" class="bg-gray-50 rounded-3xl p-5 border border-gray-100">
+                <p class="text-gray-400 text-center py-6">ยังไม่ได้เลือกรายการลงทุน</p>
             </div>
         </section>
 
@@ -108,9 +123,7 @@
                 <p class="text-sm text-gray-500">
                     พัฒนาโดย <span class="font-medium text-gray-700">ครูกฤษณพล ทองอุ่น</span>
                 </p>
-                <p class="text-xs text-gray-400 mt-1">
-                    โรงเรียนเทพศิรินทร์นนทบุรี
-                </p>
+                <p class="text-xs text-gray-400 mt-1">โรงเรียนเทพศิรินทร์นนทบุรี</p>
             </div>
         </footer>
 
@@ -135,9 +148,10 @@
         }
 
         const currentUser = JSON.parse(savedUser);
-
         const INITIAL_BUDGET = 10000000;
+
         let currentBudget = INITIAL_BUDGET;
+        let allInvestments = [];
 
         document.getElementById('studentInfo').innerText =
             `${currentUser.name} ${currentUser.surname} (ม.${currentUser.class} เลขที่ ${currentUser.number})`;
@@ -162,14 +176,10 @@
             try {
                 const response = await fetch(API_URL, {
                     method: "POST",
-                    headers: {
-                        "Content-Type": "text/plain;charset=utf-8"
-                    },
+                    headers: { "Content-Type": "text/plain;charset=utf-8" },
                     body: JSON.stringify({
                         action: "getBusinesses",
-                        payload: {
-                            class: currentUser.class
-                        }
+                        payload: { class: currentUser.class }
                     })
                 });
 
@@ -195,67 +205,127 @@
         }
 
         async function loadInvestmentHistory() {
-            const tbody = document.getElementById('historyTableBody');
+            const select = document.getElementById('historySelect');
+            const detailBox = document.getElementById('historyDetailBox');
 
-            tbody.innerHTML = `
-                <tr>
-                    <td colspan="3" class="py-8 text-center text-gray-400">
-                        กำลังโหลดประวัติการลงทุน...
-                    </td>
-                </tr>
-            `;
+            select.innerHTML = `<option value="">กำลังโหลดประวัติ...</option>`;
+            detailBox.innerHTML = `<p class="text-gray-400 text-center py-6">กำลังโหลดข้อมูล...</p>`;
 
             try {
                 const response = await fetch(API_URL, {
                     method: "POST",
-                    headers: {
-                        "Content-Type": "text/plain;charset=utf-8"
-                    },
+                    headers: { "Content-Type": "text/plain;charset=utf-8" },
                     body: JSON.stringify({
                         action: "getStudentInvestments",
-                        payload: {
-                            studentId: currentUser.studentId
-                        }
+                        payload: { studentId: currentUser.studentId }
                     })
                 });
 
                 const result = await response.json();
 
                 if (result.success) {
-                    const investments = result.data || [];
+                    allInvestments = result.data || [];
 
-                    const totalInvested = investments.reduce((sum, item) => {
+                    const totalInvested = allInvestments.reduce((sum, item) => {
                         return sum + Number(item.amount || 0);
                     }, 0);
 
                     currentBudget = INITIAL_BUDGET - totalInvested;
 
-                    document.getElementById('budgetAvailable').innerText =
-                        currentBudget.toLocaleString();
+                    document.getElementById('budgetAvailable').innerText = currentBudget.toLocaleString();
+                    document.getElementById('historyCount').innerText = allInvestments.length.toLocaleString();
+                    document.getElementById('historyTotalAmount').innerText = totalInvested.toLocaleString();
 
-                    renderHistoryTable(investments);
+                    renderHistoryDropdown();
 
                 } else {
-                    tbody.innerHTML = `
-                        <tr>
-                            <td colspan="3" class="py-8 text-center text-red-500">
-                                ${result.message || 'ดึงประวัติการลงทุนล้มเหลว'}
-                            </td>
-                        </tr>
+                    select.innerHTML = `<option value="">ดึงประวัติไม่สำเร็จ</option>`;
+                    detailBox.innerHTML = `
+                        <p class="text-red-500 text-center py-6">
+                            ${result.message || 'ดึงประวัติการลงทุนล้มเหลว'}
+                        </p>
                     `;
                 }
 
             } catch (error) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="3" class="py-8 text-center text-red-500">
-                            เกิดข้อผิดพลาดในการเชื่อมต่อเครือข่าย
-                        </td>
-                    </tr>
+                select.innerHTML = `<option value="">เชื่อมต่อไม่ได้</option>`;
+                detailBox.innerHTML = `
+                    <p class="text-red-500 text-center py-6">
+                        เกิดข้อผิดพลาดในการเชื่อมต่อเครือข่าย
+                    </p>
                 `;
-
                 document.getElementById('budgetAvailable').innerText = "โหลดไม่สำเร็จ";
             }
+        }
+
+        function renderHistoryDropdown() {
+            const select = document.getElementById('historySelect');
+            const detailBox = document.getElementById('historyDetailBox');
+
+            select.innerHTML = "";
+
+            if (!allInvestments || allInvestments.length === 0) {
+                select.innerHTML = `<option value="">ยังไม่มีประวัติการลงทุน</option>`;
+                detailBox.innerHTML = `<p class="text-gray-400 text-center py-6">คุณยังไม่มีประวัติการลงทุนในขณะนี้</p>`;
+                return;
+            }
+
+            select.innerHTML = `<option value="">-- เลือกรายการลงทุน --</option>`;
+
+            allInvestments.forEach((item, index) => {
+                const amount = Number(item.amount || 0);
+                select.innerHTML += `
+                    <option value="${index}">
+                        ${item.timestamp || '-'} | ${item.businessName || 'ไม่พบชื่อธุรกิจ'} | ฿${amount.toLocaleString()}
+                    </option>
+                `;
+            });
+
+            detailBox.innerHTML = `<p class="text-gray-400 text-center py-6">เลือกรายการด้านบน แล้วกด “ดูรายละเอียด”</p>`;
+        }
+
+        function showSelectedInvestmentDetail() {
+            const select = document.getElementById('historySelect');
+            const detailBox = document.getElementById('historyDetailBox');
+            const index = select.value;
+
+            if (index === "" || !allInvestments[index]) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'ยังไม่ได้เลือกรายการ',
+                    text: 'กรุณาเลือกรายการลงทุนก่อน',
+                    confirmButtonColor: '#111827'
+                });
+                return;
+            }
+
+            const item = allInvestments[index];
+            const amount = Number(item.amount || 0);
+
+            detailBox.innerHTML = `
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="bg-white rounded-2xl p-4 border border-gray-100">
+                        <p class="text-sm text-gray-500">ชื่อธุรกิจ</p>
+                        <p class="text-lg font-semibold text-gray-900 mt-1">
+                            ${escapeHtml(item.businessName || 'ไม่พบชื่อธุรกิจ')}
+                        </p>
+                    </div>
+
+                    <div class="bg-white rounded-2xl p-4 border border-gray-100">
+                        <p class="text-sm text-gray-500">ยอดเงินลงทุน</p>
+                        <p class="text-2xl font-semibold text-emerald-600 mt-1">
+                            ฿${amount.toLocaleString()}
+                        </p>
+                    </div>
+
+                    <div class="bg-white rounded-2xl p-4 border border-gray-100">
+                        <p class="text-sm text-gray-500">วัน-เวลา</p>
+                        <p class="text-lg font-medium text-gray-900 mt-1">
+                            ${escapeHtml(item.timestamp || '-')}
+                        </p>
+                    </div>
+                </div>
+            `;
         }
 
         function renderBusinesses(businesses) {
@@ -314,49 +384,6 @@
             });
         }
 
-        function renderHistoryTable(investments) {
-            const tbody = document.getElementById('historyTableBody');
-            tbody.innerHTML = "";
-
-            if (!investments || investments.length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="3" class="py-10 text-center text-gray-400 text-sm">
-                            คุณยังไม่มีประวัติการลงทุนในขณะนี้
-                        </td>
-                    </tr>
-                `;
-                return;
-            }
-
-            investments.forEach(item => {
-                const amount = Number(item.amount || 0);
-
-                tbody.innerHTML += `
-                    <tr class="block md:table-row mb-4 md:mb-0 bg-white md:bg-transparent border border-gray-100 md:border-0 rounded-2xl md:rounded-none shadow-sm md:shadow-none overflow-hidden">
-                        
-                        <td class="block md:table-cell py-3 md:py-4 px-4 border-b md:border-b border-gray-100 text-gray-600 md:text-gray-500">
-                            <span class="block md:hidden text-xs text-gray-400 mb-1">วัน-เวลาที่ลงทุน</span>
-                            <span class="text-sm">${escapeHtml(item.timestamp || '-')}</span>
-                        </td>
-
-                        <td class="block md:table-cell py-3 md:py-4 px-4 border-b md:border-b border-gray-100">
-                            <span class="block md:hidden text-xs text-gray-400 mb-1">ชื่อธุรกิจ</span>
-                            <span class="font-medium text-gray-900">${escapeHtml(item.businessName || 'ไม่พบชื่อธุรกิจ')}</span>
-                        </td>
-
-                        <td class="block md:table-cell py-3 md:py-4 px-4 md:text-right">
-                            <span class="block md:hidden text-xs text-gray-400 mb-1">ยอดเงินลงทุน</span>
-                            <span class="font-semibold text-emerald-600 text-lg md:text-base">
-                                ฿${amount.toLocaleString()}
-                            </span>
-                        </td>
-
-                    </tr>
-                `;
-            });
-        }
-
         async function invest(businessId, businessName) {
             const amountInput = document.getElementById(`amount-${businessId}`);
             const btn = document.getElementById(`btn-${businessId}`);
@@ -393,9 +420,7 @@
                 cancelButtonText: 'ยกเลิก'
             });
 
-            if (!confirmResult.isConfirmed) {
-                return;
-            }
+            if (!confirmResult.isConfirmed) return;
 
             amountInput.disabled = true;
             btn.disabled = true;
@@ -404,9 +429,7 @@
             try {
                 const response = await fetch(API_URL, {
                     method: "POST",
-                    headers: {
-                        "Content-Type": "text/plain;charset=utf-8"
-                    },
+                    headers: { "Content-Type": "text/plain;charset=utf-8" },
                     body: JSON.stringify({
                         action: "invest",
                         payload: {
@@ -430,7 +453,6 @@
                     });
 
                     amountInput.value = "";
-
                     await loadInvestmentHistory();
 
                 } else {
